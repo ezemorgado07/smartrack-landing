@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SmartRACK · ePDU Inteligente · AucaTek</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy:    #23264f;
+      --navy2:   #1a1d3a;
+      --orange:  #f49825;
+      --celeste: #5f7dbe;
+      --gray:    #6d6968;
+      --bg:      #f8f9fb;
+      --border:  #e2e4ed;
+      --muted:   #6b7280;
+      --text:    #1f2937;
+      --white:   #ffffff;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Montserrat', sans-serif; background: var(--white); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(35,38,79,0.97); backdrop-filter: blur(10px);
+      height: 60px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 6%;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .nav-brand { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.5px; text-decoration: none; }
+    .nav-brand span { color: var(--orange); }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--white); }
+    .nav-cta {
+      background: var(--orange); color: var(--navy) !important;
+      font-weight: 700 !important; padding: 8px 18px;
+      border-radius: 8px; transition: opacity 0.15s !important;
+    }
+    .nav-cta:hover { opacity: 0.9; }
+    .nav-menu { display: none; background: none; border: none; cursor: pointer; color: #fff; font-size: 22px; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+      min-height: 100vh; padding: 120px 6% 80px;
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 80% 50%, rgba(95,125,190,0.12) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 50% at 10% 80%, rgba(244,152,37,0.06) 0%, transparent 70%);
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 640px; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(244,152,37,0.12); border: 1px solid rgba(244,152,37,0.3);
+      border-radius: 20px; padding: 5px 14px;
+      font-size: 11px; font-weight: 700; color: var(--orange);
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 24px;
+    }
+    .hero-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 900; color: #fff; line-height: 1.05;
+      letter-spacing: -2px; margin-bottom: 20px;
+    }
+    .hero h1 span { color: var(--orange); }
+    .hero-sub {
+      font-size: 17px; color: rgba(255,255,255,0.65);
+      line-height: 1.7; max-width: 520px; margin-bottom: 36px;
+    }
+    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--orange); color: var(--navy);
+      font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;
+      padding: 14px 28px; border-radius: 10px; border: none;
+      cursor: pointer; text-decoration: none; display: inline-flex;
+      align-items: center; gap: 8px; transition: all 0.15s;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(244,152,37,0.35); }
+    .btn-secondary {
+      background: rgba(255,255,255,0.08); color: #fff;
+      font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600;
+      padding: 14px 28px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer; text-decoration: none; display: inline-flex;
+      align-items: center; gap: 8px; transition: all 0.15s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+    .hero-stats {
+      display: flex; gap: 36px; flex-wrap: wrap;
+      margin-top: 48px; padding-top: 36px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .stat-num { font-size: 28px; font-weight: 800; color: var(--orange); line-height: 1; }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+    /* SECCIONES */
+    section { padding: 80px 6%; }
+    .section-eyebrow {
+      font-size: 11px; font-weight: 700; color: var(--orange);
+      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px); font-weight: 800;
+      color: var(--navy); letter-spacing: -1px; line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 16px; color: var(--muted); max-width: 560px;
+      line-height: 1.7; margin-bottom: 48px;
+    }
+    .centered { text-align: center; }
+    .centered .section-sub { margin: 0 auto 48px; }
+
+    /* PROBLEMA */
+    .problemas {
+      background: var(--bg);
+    }
+    .problema-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+    .problema-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px;
+    }
+    .problema-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(244,152,37,0.08); display: flex;
+      align-items: center; justify-content: center; margin-bottom: 16px;
+    }
+    .problema-icon svg { width: 24px; height: 24px; stroke: var(--orange); }
+    .problema-card h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .problema-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* SOLUCION */
+    .solucion-wrap {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+    }
+    .solucion-img {
+      background: linear-gradient(135deg, var(--navy), var(--navy2));
+      border-radius: 20px; padding: 40px;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 320px;
+    }
+    .device-mockup {
+      width: 100%; max-width: 280px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 20px;
+    }
+    .device-top {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .device-label { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.9); }
+    .device-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #4ade80; font-weight: 600; }
+    .device-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; }
+    .device-metric {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .device-metric:last-child { border-bottom: none; }
+    .device-metric-label { font-size: 11px; color: rgba(255,255,255,0.45); }
+    .device-metric-val { font-size: 13px; font-weight: 700; color: var(--orange); font-family: monospace; }
+    .device-outlets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+    .outlet {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px; padding: 10px; display: flex;
+      align-items: center; justify-content: space-between;
+    }
+    .outlet-label { font-size: 10px; color: rgba(255,255,255,0.5); }
+    .outlet-on { background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.3); }
+    .outlet-toggle { width: 28px; height: 16px; border-radius: 8px; position: relative; }
+    .outlet-toggle.on { background: #4ade80; }
+    .outlet-toggle.off { background: rgba(255,255,255,0.15); }
+    .outlet-toggle::after { content:''; position: absolute; top: 2px; width: 12px; height: 12px; background: #fff; border-radius: 50%; transition: left 0.15s; }
+    .outlet-toggle.on::after { left: 14px; }
+    .outlet-toggle.off::after { left: 2px; }
+
+    .check-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .check-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--text); }
+    .check-list li::before { content: ''; width: 20px; height: 20px; border-radius: 50%; background: rgba(244,152,37,0.1); border: 1px solid rgba(244,152,37,0.3); flex-shrink: 0; margin-top: 2px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f49825' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E"); background-size: 12px; background-repeat: no-repeat; background-position: center; }
+
+    /* CARACTERÍSTICAS */
+    .features { background: var(--bg); }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .feature-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px; transition: all 0.15s;
+    }
+    .feature-card:hover { border-color: var(--orange); box-shadow: 0 4px 20px rgba(244,152,37,0.08); transform: translateY(-2px); }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 10px; margin-bottom: 16px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .feature-icon svg { width: 22px; height: 22px; }
+    .feature-card h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .feature-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* MODOS */
+    .modos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 800px; margin: 0 auto; }
+    .modo-card {
+      border-radius: 16px; padding: 32px; border: 2px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .modo-card.premium {
+      background: var(--navy); border-color: var(--orange);
+    }
+    .modo-badge {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px;
+      border-radius: 20px; margin-bottom: 16px;
+    }
+    .modo-normal .modo-badge { background: var(--bg); color: var(--muted); }
+    .modo-card.premium .modo-badge { background: rgba(244,152,37,0.2); color: var(--orange); }
+    .modo-price {
+      font-size: 28px; font-weight: 800; margin-bottom: 4px;
+    }
+    .modo-normal .modo-price { color: var(--navy); }
+    .modo-card.premium .modo-price { color: var(--white); }
+    .modo-period { font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+    .modo-card.premium .modo-period { color: rgba(255,255,255,0.5); }
+    .modo-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .modo-features li { font-size: 13px; display: flex; align-items: center; gap: 10px; }
+    .modo-normal .modo-features li { color: var(--text); }
+    .modo-card.premium .modo-features li { color: rgba(255,255,255,0.85); }
+    .modo-features li .check { color: #4ade80; font-size: 15px; flex-shrink: 0; }
+    .modo-features li .cross { color: var(--border); font-size: 15px; flex-shrink: 0; }
+    .modo-btn {
+      width: 100%; padding: 12px; border-radius: 10px; border: none;
+      font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700;
+      cursor: pointer; text-decoration: none; display: block; text-align: center;
+      transition: all 0.15s;
+    }
+    .modo-normal .modo-btn { background: var(--bg); color: var(--navy); border: 1px solid var(--border); }
+    .modo-normal .modo-btn:hover { border-color: var(--navy); }
+    .modo-card.premium .modo-btn { background: var(--orange); color: var(--navy); }
+    .modo-card.premium .modo-btn:hover { opacity: 0.9; }
+
+    /* CONTACTO */
+    .contacto { background: var(--bg); }
+    .contacto-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
+    .contacto-info h2 { font-size: 32px; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; margin-bottom: 12px; }
+    .contacto-info p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+    .contacto-datos { display: flex; flex-direction: column; gap: 14px; }
+    .contacto-dato { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text); }
+    .contacto-dato svg { width: 18px; height: 18px; stroke: var(--orange); flex-shrink: 0; }
+
+    /* FORM */
+    .form-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+    }
+    .form-card h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+    .form-card p { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 11px 14px;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-family: 'Montserrat', sans-serif; font-size: 13px;
+      color: var(--text); background: var(--white);
+      outline: none; transition: border-color 0.15s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: var(--celeste);
+    }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-submit {
+      width: 100%; padding: 13px; background: var(--navy);
+      color: var(--white); border: none; border-radius: 10px;
+      font-family: 'Montserrat', sans-serif; font-size: 14px;
+      font-weight: 700; cursor: pointer; transition: all 0.15s; margin-top: 4px;
+    }
+    .form-submit:hover { background: var(--celeste); }
+    .form-success {
+      display: none; text-align: center; padding: 20px;
+      color: #16a34a; font-size: 14px; font-weight: 600;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy2); padding: 40px 6%;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-brand { font-size: 16px; font-weight: 800; color: #fff; }
+    .footer-brand span { color: var(--orange); }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { font-size: 12px; color: rgba(255,255,255,0.5); text-decoration: none; }
+    .footer-links a:hover { color: rgba(255,255,255,0.9); }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); width: 100%; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .solucion-wrap, .contacto-wrap { grid-template-columns: 1fr; }
+      .modos-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .nav-menu { display: block; }
+      .form-row { grid-template-columns: 1fr; }
+      .hero-stats { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">Smart<span>RACK</span></a>
+  <div class="nav-links">
+    <a href="#problema">Problema</a>
+    <a href="#solucion">Solución</a>
+    <a href="#caracteristicas">Características</a>
+    <a href="#modos">Planes</a>
+    <a href="#contacto" class="nav-cta">Contactar</a>
+  </div>
+  <button class="nav-menu">☰</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-dot"></div>
+      ePDU Inteligente · AucaTek
+    </div>
+    <h1>Control total<br>de tu <span>rack</span><br>desde cualquier lugar.</h1>
+    <p class="hero-sub">SmartRACK es la solución inteligente para monitorear y controlar la energía de tu rack de servidores en tiempo real, sin intervención física y con alertas automáticas ante cualquier anomalía.</p>
+    <div class="hero-btns">
+      <a href="#contacto" class="btn-primary">Solicitar información ›</a>
+      <a href="#solucion" class="btn-secondary">Ver cómo funciona</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">4</div>
+        <div class="stat-label">Tomas inteligentes</div>
+      </div>
+      <div>
+        <div class="stat-num">8</div>
+        <div class="stat-label">Métricas en tiempo real</div>
+      </div>
+      <div>
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Monitoreo continuo</div>
+      </div>
+      <div>
+        <div class="stat-num">TLS</div>
+        <div class="stat-label">Comunicación segura</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="problemas" id="problema">
+  <div class="section-eyebrow">El problema</div>
+  <div class="section-title">Gestionar un rack<br>no debería ser así.</div>
+  <p class="section-sub">Los administradores de infraestructura IT enfrentan estos problemas a diario y no tienen herramientas adecuadas para resolverlos.</p>
+  <div class="problema-grid">
+    <div class="problema-card">
+      <div class="problema-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <h3>Sin visibilidad del consumo</h3>
+      <p>No sabés cuánta energía está consumiendo cada equipo del rack ni si hay alguno que está generando sobrecarga hasta que es demasiado tarde.</p>
+    </div>
+    <div class="problema-card">
+      <div class="problema-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <h3>Intervención física obligatoria</h3>
+      <p>Para apagar o encender un equipo conectado al rack hay que ir físicamente hasta la sala de servidores, lo que genera tiempos de respuesta inaceptables.</p>
+    </div>
+    <div class="problema-card">
+      <div class="problema-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <h3>Sin datos históricos</h3>
+      <p>No hay registro del consumo eléctrico a lo largo del tiempo, lo que impide detectar tendencias, optimizar costos o justificar inversiones en infraestructura.</p>
+    </div>
+    <div class="problema-card">
+      <div class="problema-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <h3>Soluciones comerciales inaccesibles</h3>
+      <p>Las ePDUs comerciales de marcas como APC o Raritan tienen costos muy elevados y no ofrecen integración con sistemas propios de las empresas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUCIÓN -->
+<section id="solucion">
+  <div class="solucion-wrap">
+    <div class="solucion-img">
+      <div class="device-mockup">
+        <div class="device-top">
+          <div class="device-label">SmartRACK · PDU-01</div>
+          <div class="device-status"><div class="device-dot"></div>Online</div>
+        </div>
+        <div class="device-metric"><span class="device-metric-label">Voltaje</span><span class="device-metric-val">220.3 V</span></div>
+        <div class="device-metric"><span class="device-metric-label">Corriente</span><span class="device-metric-val">4.72 A</span></div>
+        <div class="device-metric"><span class="device-metric-label">Potencia</span><span class="device-metric-val">1038 W</span></div>
+        <div class="device-metric"><span class="device-metric-label">Temperatura</span><span class="device-metric-val">28.4 °C</span></div>
+        <div class="device-outlets">
+          <div class="outlet outlet-on"><span class="outlet-label">Toma 1</span><div class="outlet-toggle on"></div></div>
+          <div class="outlet outlet-on"><span class="outlet-label">Toma 2</span><div class="outlet-toggle on"></div></div>
+          <div class="outlet"><span class="outlet-label">Toma 3</span><div class="outlet-toggle off"></div></div>
+          <div class="outlet outlet-on"><span class="outlet-label">Toma 4</span><div class="outlet-toggle on"></div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-eyebrow">La solución</div>
+      <div class="section-title">Una ePDU pensada para empresas reales.</div>
+      <p class="section-sub" style="margin-bottom:28px;">SmartRACK integra hardware de medición eléctrica con un portal web centralizado accesible desde cualquier dispositivo con internet.</p>
+      <ul class="check-list">
+        <li>Control ON/OFF de cada toma individualmente desde el portal web, sin importar dónde estés.</li>
+        <li>Medición eléctrica completa en tiempo real — voltaje, corriente, potencia, frecuencia y consumo acumulado.</li>
+        <li>Monitoreo de temperatura y humedad interna del rack para prevenir fallas por sobrecalentamiento.</li>
+        <li>Alertas automáticas por correo ante cualquier condición anormal — sin necesidad de monitoreo manual.</li>
+        <li>Funcionamiento local garantizado aunque se pierda la conexión a internet.</li>
+        <li>Comunicación segura cifrada con TLS en todo momento.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CARACTERÍSTICAS -->
+<section class="features" id="caracteristicas">
+  <div class="centered">
+    <div class="section-eyebrow">Características</div>
+    <div class="section-title">Todo lo que necesitás<br>en un solo dispositivo.</div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(35,38,79,0.08);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#23264f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+      </div>
+      <h3>Control por toma</h3>
+      <p>4 tomas inteligentes con control ON/OFF individual desde el portal web o desde la red local por IP.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(244,152,37,0.08);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#f49825" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <h3>Telemetría en tiempo real</h3>
+      <p>Voltaje, corriente, potencia, factor de potencia, frecuencia, consumo acumulado, temperatura y humedad.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(220,38,38,0.08);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <h3>Alertas automáticas</h3>
+      <p>Notificaciones por correo ante sobrecarga, temperatura elevada o voltaje fuera de rango. Sin intervención manual.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(95,125,190,0.08);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#5f7dbe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <h3>Seguridad multicapa</h3>
+      <p>MQTT sobre TLS, HTTPS, bcrypt, CSRF tokens, rate limiting y logs de seguridad en producción.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(22,163,74,0.08);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      </div>
+      <h3>Buffer offline</h3>
+      <p>Si se pierde la conexión, el dispositivo guarda las lecturas localmente y las sincroniza automáticamente al reconectarse.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(139,92,246,0.08);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </div>
+      <h3>Roles de acceso</h3>
+      <p>Tres roles diferenciados — Administrador, Operador y Visualizador — con permisos específicos para cada uno.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MODOS -->
+<section id="modos">
+  <div class="centered">
+    <div class="section-eyebrow">Planes</div>
+    <div class="section-title">Elegí el plan que<br>se adapta a tu operación.</div>
+    <p class="section-sub">Ambos planes incluyen el hardware SmartRACK. La diferencia está en las funcionalidades del software.</p>
+  </div>
+  <div class="modos-grid">
+    <div class="modo-card modo-normal">
+      <div class="modo-badge">Normal</div>
+      <div class="modo-price">Gratuito</div>
+      <div class="modo-period">Incluido con el hardware</div>
+      <ul class="modo-features">
+        <li><span class="check">✓</span> Control ON/OFF de 4 tomas</li>
+        <li><span class="check">✓</span> Interfaz web local por IP</li>
+        <li><span class="check">✓</span> Log de eventos del sistema</li>
+        <li><span class="check">✓</span> 3 roles de usuario</li>
+        <li><span class="cross">✗</span> Telemetría en tiempo real</li>
+        <li><span class="cross">✗</span> Alertas automáticas</li>
+        <li><span class="cross">✗</span> Gráficos históricos</li>
+        <li><span class="cross">✗</span> Exportación CSV</li>
+      </ul>
+      <a href="#contacto" class="modo-btn">Consultar precio del hardware</a>
+    </div>
+    <div class="modo-card premium">
+      <div class="modo-badge">Premium</div>
+      <div class="modo-price">Consultá a AucaTek</div>
+      <div class="modo-period">Planes anuales disponibles</div>
+      <ul class="modo-features">
+        <li><span class="check">✓</span> Todo lo del Modo Normal</li>
+        <li><span class="check">✓</span> Telemetría eléctrica en tiempo real</li>
+        <li><span class="check">✓</span> Temperatura y humedad del rack</li>
+        <li><span class="check">✓</span> Alertas automáticas por mail</li>
+        <li><span class="check">✓</span> Gráficos históricos de consumo</li>
+        <li><span class="check">✓</span> Exportación CSV de datos</li>
+        <li><span class="check">✓</span> Período de gracia de 30 días</li>
+        <li><span class="check">✓</span> Soporte técnico de AucaTek</li>
+      </ul>
+      <a href="#contacto" class="modo-btn">Consultar precio Premium</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="contacto-wrap">
+    <div class="contacto-info">
+      <div class="section-eyebrow">Contacto</div>
+      <h2>¿Querés llevar SmartRACK a tu infraestructura?</h2>
+      <p>Completá el formulario y un representante de AucaTek se va a comunicar con vos para asesorarte sobre el plan que mejor se adapta a tus necesidades.</p>
+      <div class="contacto-datos">
+        <div class="contacto-dato">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          info@aucatek.com.ar
+        </div>
+        <div class="contacto-dato">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8 9a16 16 0 0 0 6 6l.81-.81a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          11-5272-7200
+        </div>
+        <div class="contacto-dato">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Av. Corrientes 1386, 9° piso, Buenos Aires
+        </div>
+        <div class="contacto-dato">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          www.aucatek.com
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Solicitar información</h3>
+      <p>Respondemos en menos de 24 horas hábiles.</p>
+      <form id="contactForm" action="https://formspree.io/f/xjyvpplb" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <input type="text" name="nombre" placeholder="Tu nombre" required/>
+          </div>
+          <div class="form-group">
+            <label>Apellido *</label>
+            <input type="text" name="apellido" placeholder="Tu apellido" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email *</label>
+          <input type="email" name="email" placeholder="tu@empresa.com" required/>
+        </div>
+        <div class="form-group">
+          <label>Empresa</label>
+          <input type="text" name="empresa" placeholder="Nombre de tu empresa"/>
+        </div>
+        <div class="form-group">
+          <label>¿Qué te interesa?</label>
+          <select name="interes">
+            <option value="">Seleccioná una opción</option>
+            <option value="hardware">Precio del hardware SmartRACK</option>
+            <option value="premium">Plan Premium</option>
+            <option value="demo">Solicitar una demo</option>
+            <option value="otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Mensaje</label>
+          <textarea name="mensaje" placeholder="Contanos sobre tu infraestructura o consulta..."></textarea>
+        </div>
+        <button type="submit" class="form-submit">Enviar consulta</button>
+        <div class="form-success" id="formSuccess">¡Mensaje enviado! Te contactamos pronto.</div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Smart<span>RACK</span></div>
+  <div class="footer-links">
+    <a href="https://aucateksmartrack.alwaysdata.net" target="_blank">Portal web</a>
+    <a href="https://ezemorgado07.github.io/smartrack/smartrack-docs/" target="_blank">Documentación</a>
+    <a href="https://ezemorgado07.github.io/faq-smartrack/" target="_blank">FAQ</a>
+    <a href="https://github.com/ezemorgado07/smartrack" target="_blank">GitHub</a>
+    <a href="mailto:info@aucatek.com.ar">Contacto</a>
+  </div>
+  <div class="footer-copy">© 2026 AucaTek — innovate IT · Instituto Leonardo Murialdo</div>
+</footer>
+
+<script>
+  // Formulario con Formspree
+  const form = document.getElementById('contactForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('.form-submit');
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        form.reset();
+        document.getElementById('formSuccess').style.display = 'block';
+        btn.style.display = 'none';
+      } else {
+        btn.textContent = 'Error al enviar. Intentá de nuevo.';
+        btn.disabled = false;
+      }
+    } catch {
+      btn.textContent = 'Error al enviar. Intentá de nuevo.';
+      btn.disabled = false;
+    }
+  });
+
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    document.querySelector('nav').style.boxShadow = window.scrollY > 20 ? '0 4px 20px rgba(0,0,0,0.3)' : 'none';
+  });
+</script>
+</body>
+</html>
