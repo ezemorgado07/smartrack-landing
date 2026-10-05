@@ -48,26 +48,18 @@
       min-height: 100vh; padding: 120px 6% 80px;
       display: flex; align-items: center;
       position: relative; overflow: hidden;
-      background-color: var(--navy3);
     }
     .hero::before {
       content: '';
       position: absolute; inset: 0; z-index: 0;
       background-image: url('bg-hero.jpg');
-      background-size: cover;
-      background-position: center 30%;
+      background-size: cover; background-position: center 30%;
       filter: brightness(0.28) saturate(1.2);
       pointer-events: none;
     }
     .hero::after {
-      content: '';
-      position: absolute; inset: 0; z-index: 0;
-      background: linear-gradient(
-        to right,
-        rgba(13,15,30,0.92) 0%,
-        rgba(13,15,30,0.75) 50%,
-        rgba(13,15,30,0.4) 100%
-      );
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background: linear-gradient(to right,rgba(13,15,30,0.92) 0%,rgba(13,15,30,0.75) 50%,rgba(13,15,30,0.4) 100%);
       pointer-events: none;
     }
     .hero-content { position: relative; z-index: 1; max-width: 640px; }
@@ -81,36 +73,28 @@
     .hero-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
     .hero h1 {
-      font-size: clamp(36px, 6vw, 64px);
-      font-weight: 900; color: #fff; line-height: 1.05;
-      letter-spacing: -2px; margin-bottom: 20px;
+      font-size: clamp(36px, 6vw, 64px); font-weight: 900; color: #fff;
+      line-height: 1.05; letter-spacing: -2px; margin-bottom: 20px;
     }
     .hero h1 span { color: var(--orange); }
-    .hero-sub {
-      font-size: 17px; color: rgba(255,255,255,0.65);
-      line-height: 1.7; max-width: 520px; margin-bottom: 36px;
-    }
+    .hero-sub { font-size: 17px; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 520px; margin-bottom: 36px; }
     .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
     .btn-primary {
       background: var(--orange); color: var(--navy);
       font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;
-      padding: 14px 28px; border-radius: 10px; border: none;
-      cursor: pointer; text-decoration: none; display: inline-flex;
-      align-items: center; gap: 8px; transition: all 0.15s;
+      padding: 14px 28px; border-radius: 10px; border: none; cursor: pointer;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s;
     }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(244,152,37,0.35); }
     .btn-secondary {
       background: rgba(255,255,255,0.08); color: #fff;
       font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600;
-      padding: 14px 28px; border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.15);
-      cursor: pointer; text-decoration: none; display: inline-flex;
-      align-items: center; gap: 8px; transition: all 0.15s;
+      padding: 14px 28px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s;
     }
     .btn-secondary:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
     .hero-stats {
-      display: flex; gap: 36px; flex-wrap: wrap;
-      margin-top: 48px; padding-top: 36px;
+      display: flex; gap: 36px; flex-wrap: wrap; margin-top: 48px; padding-top: 36px;
       border-top: 1px solid rgba(255,255,255,0.1);
     }
     .stat-num { font-size: 28px; font-weight: 800; color: var(--orange); line-height: 1; }
@@ -118,125 +102,90 @@
 
     /* SECCIONES */
     section { padding: 80px 6%; }
-    .section-eyebrow {
-      font-size: 11px; font-weight: 700; color: var(--orange);
-      letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px;
-    }
-    .section-title {
-      font-size: clamp(28px, 4vw, 42px); font-weight: 800;
-      color: var(--navy); letter-spacing: -1px; line-height: 1.1;
-      margin-bottom: 16px;
-    }
-    .section-sub {
-      font-size: 16px; color: var(--muted); max-width: 560px;
-      line-height: 1.7; margin-bottom: 48px;
-    }
+    .section-eyebrow { font-size: 11px; font-weight: 700; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+    .section-title { font-size: clamp(28px, 4vw, 42px); font-weight: 800; color: var(--navy); letter-spacing: -1px; line-height: 1.1; margin-bottom: 16px; }
+    .section-sub { font-size: 16px; color: var(--muted); max-width: 560px; line-height: 1.7; margin-bottom: 48px; }
     .centered { text-align: center; }
     .centered .section-sub { margin: 0 auto 48px; }
 
     /* PROBLEMA */
-    .problemas {
-      background: var(--bg);
-    }
+    .problemas { background: var(--bg); }
     .problema-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
-    .problema-card {
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: 14px; padding: 28px;
-    }
-    .problema-icon {
-      width: 48px; height: 48px; border-radius: 12px;
-      background: rgba(244,152,37,0.08); display: flex;
-      align-items: center; justify-content: center; margin-bottom: 16px;
-    }
+    .problema-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 28px; }
+    .problema-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(244,152,37,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
     .problema-icon svg { width: 24px; height: 24px; stroke: var(--orange); }
     .problema-card h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
     .problema-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    /* SOLUCION */
-    .solucion-wrap {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 60px; align-items: center;
-    }
-    .solucion-img {
-      background: linear-gradient(135deg, var(--navy), var(--navy2));
-      border-radius: 20px; padding: 40px;
-      display: flex; align-items: center; justify-content: center;
+    /* SOLUCIÓN — visor 3D */
+    .solucion-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+
+    /* Contenedor del visor 3D embebido */
+    .viewer-embed {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
       min-height: 320px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 28%, #131930 0%, #05060e 100%);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 24px 60px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(244,152,37,0.06);
     }
-    .device-mockup {
-      width: 100%; max-width: 280px;
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px; padding: 20px;
+    #gl-sol { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+    .v-controls { position: absolute; top: 12px; right: 12px; z-index: 5; display: flex; gap: 6px; flex-wrap: wrap; }
+    .vbtn {
+      font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em; padding: 7px 12px;
+      border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(6,8,16,0.72); backdrop-filter: blur(8px);
+      color: rgba(255,255,255,0.80); transition: all 0.15s;
     }
-    .device-top {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 16px; padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+    .vbtn:hover { border-color: var(--orange); color: var(--orange); }
+    .vbtn[aria-pressed="true"] { background: rgba(244,152,37,0.14); border-color: var(--orange); color: var(--orange); }
+    .v-badge {
+      position: absolute; top: 12px; left: 12px; z-index: 5;
+      font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); background: rgba(4,6,14,0.70);
+      border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; padding: 4px 10px;
     }
-    .device-label { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.9); }
-    .device-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #4ade80; font-weight: 600; }
-    .device-dot { width: 6px; height: 6px; background: #4ade80; border-radius: 50%; }
-    .device-metric {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+    .v-hint {
+      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+      z-index: 5; white-space: nowrap; pointer-events: none;
+      font-family: 'Montserrat', sans-serif; font-size: 9px;
+      color: rgba(255,255,255,0.30); background: rgba(4,6,14,0.55);
+      border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 4px 12px;
     }
-    .device-metric:last-child { border-bottom: none; }
-    .device-metric-label { font-size: 11px; color: rgba(255,255,255,0.45); }
-    .device-metric-val { font-size: 13px; font-weight: 700; color: var(--orange); font-family: monospace; }
-    .device-outlets { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
-    .outlet {
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 8px; padding: 10px; display: flex;
-      align-items: center; justify-content: space-between;
-    }
-    .outlet-label { font-size: 10px; color: rgba(255,255,255,0.5); }
-    .outlet-on { background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.3); }
-    .outlet-toggle { width: 28px; height: 16px; border-radius: 8px; position: relative; }
-    .outlet-toggle.on { background: #4ade80; }
-    .outlet-toggle.off { background: rgba(255,255,255,0.15); }
-    .outlet-toggle::after { content:''; position: absolute; top: 2px; width: 12px; height: 12px; background: #fff; border-radius: 50%; transition: left 0.15s; }
-    .outlet-toggle.on::after { left: 14px; }
-    .outlet-toggle.off::after { left: 2px; }
 
     .check-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
     .check-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--text); }
-    .check-list li::before { content: ''; width: 20px; height: 20px; border-radius: 50%; background: rgba(244,152,37,0.1); border: 1px solid rgba(244,152,37,0.3); flex-shrink: 0; margin-top: 2px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f49825' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E"); background-size: 12px; background-repeat: no-repeat; background-position: center; }
+    .check-list li::before {
+      content: ''; width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(244,152,37,0.1); border: 1px solid rgba(244,152,37,0.3);
+      flex-shrink: 0; margin-top: 2px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f49825' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+      background-size: 12px; background-repeat: no-repeat; background-position: center;
+    }
 
     /* CARACTERÍSTICAS */
     .features { background: var(--bg); }
     .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-    .feature-card {
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: 14px; padding: 28px; transition: all 0.15s;
-    }
+    .feature-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 28px; transition: all 0.15s; }
     .feature-card:hover { border-color: var(--orange); box-shadow: 0 4px 20px rgba(244,152,37,0.08); transform: translateY(-2px); }
-    .feature-icon {
-      width: 44px; height: 44px; border-radius: 10px; margin-bottom: 16px;
-      display: flex; align-items: center; justify-content: center;
-    }
+    .feature-icon { width: 44px; height: 44px; border-radius: 10px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; }
     .feature-icon svg { width: 22px; height: 22px; }
     .feature-card h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
     .feature-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
     /* MODOS */
     .modos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 800px; margin: 0 auto; }
-    .modo-card {
-      border-radius: 16px; padding: 32px; border: 2px solid var(--border);
-      position: relative; overflow: hidden;
-    }
-    .modo-card.premium {
-      background: var(--navy); border-color: var(--orange);
-    }
-    .modo-badge {
-      display: inline-block; font-size: 10px; font-weight: 700;
-      letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px;
-      border-radius: 20px; margin-bottom: 16px;
-    }
+    .modo-card { border-radius: 16px; padding: 32px; border: 2px solid var(--border); position: relative; overflow: hidden; }
+    .modo-card.premium { background: var(--navy); border-color: var(--orange); }
+    .modo-badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
     .modo-normal .modo-badge { background: var(--bg); color: var(--muted); }
     .modo-card.premium .modo-badge { background: rgba(244,152,37,0.2); color: var(--orange); }
-    .modo-price {
-      font-size: 28px; font-weight: 800; margin-bottom: 4px;
-    }
+    .modo-price { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
     .modo-normal .modo-price { color: var(--navy); }
     .modo-card.premium .modo-price { color: var(--white); }
     .modo-period { font-size: 12px; color: var(--muted); margin-bottom: 24px; }
@@ -247,12 +196,7 @@
     .modo-card.premium .modo-features li { color: rgba(255,255,255,0.85); }
     .modo-features li .check { color: #4ade80; font-size: 15px; flex-shrink: 0; }
     .modo-features li .cross { color: var(--border); font-size: 15px; flex-shrink: 0; }
-    .modo-btn {
-      width: 100%; padding: 12px; border-radius: 10px; border: none;
-      font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700;
-      cursor: pointer; text-decoration: none; display: block; text-align: center;
-      transition: all 0.15s;
-    }
+    .modo-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; display: block; text-align: center; transition: all 0.15s; }
     .modo-normal .modo-btn { background: var(--bg); color: var(--navy); border: 1px solid var(--border); }
     .modo-normal .modo-btn:hover { border-color: var(--navy); }
     .modo-card.premium .modo-btn { background: var(--orange); color: var(--navy); }
@@ -266,46 +210,21 @@
     .contacto-datos { display: flex; flex-direction: column; gap: 14px; }
     .contacto-dato { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text); }
     .contacto-dato svg { width: 18px; height: 18px; stroke: var(--orange); flex-shrink: 0; }
-
-    /* FORM */
-    .form-card {
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: 16px; padding: 32px;
-    }
+    .form-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 32px; }
     .form-card h3 { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
     .form-card p { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 6px; }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 11px 14px;
-      border: 1px solid var(--border); border-radius: 8px;
-      font-family: 'Montserrat', sans-serif; font-size: 13px;
-      color: var(--text); background: var(--white);
-      outline: none; transition: border-color 0.15s;
-    }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color: var(--celeste);
-    }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 13px; color: var(--text); background: var(--white); outline: none; transition: border-color 0.15s; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--celeste); }
     .form-group textarea { resize: vertical; min-height: 100px; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-submit {
-      width: 100%; padding: 13px; background: var(--navy);
-      color: var(--white); border: none; border-radius: 10px;
-      font-family: 'Montserrat', sans-serif; font-size: 14px;
-      font-weight: 700; cursor: pointer; transition: all 0.15s; margin-top: 4px;
-    }
+    .form-submit { width: 100%; padding: 13px; background: var(--navy); color: var(--white); border: none; border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s; margin-top: 4px; }
     .form-submit:hover { background: var(--celeste); }
-    .form-success {
-      display: none; text-align: center; padding: 20px;
-      color: #16a34a; font-size: 14px; font-weight: 600;
-    }
+    .form-success { display: none; text-align: center; padding: 20px; color: #16a34a; font-size: 14px; font-weight: 600; }
 
     /* FOOTER */
-    footer {
-      background: var(--navy2); padding: 40px 6%;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 16px;
-    }
+    footer { background: var(--navy2); padding: 40px 6%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
     .footer-brand { font-size: 16px; font-weight: 800; color: #fff; }
     .footer-brand span { color: var(--orange); }
     .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
@@ -321,6 +240,7 @@
       .nav-menu { display: block; }
       .form-row { grid-template-columns: 1fr; }
       .hero-stats { gap: 24px; }
+      .viewer-embed { aspect-ratio: 3/2; }
     }
   </style>
 </head>
@@ -342,10 +262,7 @@
 <!-- HERO -->
 <section class="hero">
   <div class="hero-content">
-    <div class="hero-eyebrow">
-      <div class="hero-dot"></div>
-      ePDU Inteligente · AucaTek
-    </div>
+    <div class="hero-eyebrow"><div class="hero-dot"></div>ePDU Inteligente · AucaTek</div>
     <h1>Control total<br>de tu <span>rack</span><br>desde cualquier lugar.</h1>
     <p class="hero-sub">SmartRACK es la solución inteligente para monitorear y controlar la energía de tu rack de servidores en tiempo real, sin intervención física y con alertas automáticas ante cualquier anomalía.</p>
     <div class="hero-btns">
@@ -353,22 +270,10 @@
       <a href="#solucion" class="btn-secondary">Ver cómo funciona</a>
     </div>
     <div class="hero-stats">
-      <div>
-        <div class="stat-num">4</div>
-        <div class="stat-label">Tomas inteligentes</div>
-      </div>
-      <div>
-        <div class="stat-num">8</div>
-        <div class="stat-label">Métricas en tiempo real</div>
-      </div>
-      <div>
-        <div class="stat-num">24/7</div>
-        <div class="stat-label">Monitoreo continuo</div>
-      </div>
-      <div>
-        <div class="stat-num">TLS</div>
-        <div class="stat-label">Comunicación segura</div>
-      </div>
+      <div><div class="stat-num">4</div><div class="stat-label">Tomas inteligentes</div></div>
+      <div><div class="stat-num">8</div><div class="stat-label">Métricas en tiempo real</div></div>
+      <div><div class="stat-num">24/7</div><div class="stat-label">Monitoreo continuo</div></div>
+      <div><div class="stat-num">TLS</div><div class="stat-label">Comunicación segura</div></div>
     </div>
   </div>
 </section>
@@ -380,57 +285,45 @@
   <p class="section-sub">Los administradores de infraestructura IT enfrentan estos problemas a diario y no tienen herramientas adecuadas para resolverlos.</p>
   <div class="problema-grid">
     <div class="problema-card">
-      <div class="problema-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
+      <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
       <h3>Sin visibilidad del consumo</h3>
       <p>No sabés cuánta energía está consumiendo cada equipo del rack ni si hay alguno que está generando sobrecarga hasta que es demasiado tarde.</p>
     </div>
     <div class="problema-card">
-      <div class="problema-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      </div>
+      <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
       <h3>Intervención física obligatoria</h3>
       <p>Para apagar o encender un equipo conectado al rack hay que ir físicamente hasta la sala de servidores, lo que genera tiempos de respuesta inaceptables.</p>
     </div>
     <div class="problema-card">
-      <div class="problema-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-      </div>
+      <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
       <h3>Sin datos históricos</h3>
-      <p>No hay registro del consumo eléctrico a lo largo del tiempo, lo que impide detectar tendencias, optimizar costos o justificar inversiones en infraestructura.</p>
+      <p>No hay registro del consumo eléctrico a lo largo del tiempo, lo que impide detectar tendencias, optimizar costos o justificar inversiones.</p>
     </div>
     <div class="problema-card">
-      <div class="problema-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-      </div>
+      <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
       <h3>Soluciones comerciales inaccesibles</h3>
       <p>Las ePDUs comerciales de marcas como APC o Raritan tienen costos muy elevados y no ofrecen integración con sistemas propios de las empresas.</p>
     </div>
   </div>
 </section>
 
-<!-- SOLUCIÓN -->
+<!-- SOLUCIÓN — con visor 3D -->
 <section id="solucion">
   <div class="solucion-wrap">
-    <div class="solucion-img">
-      <div class="device-mockup">
-        <div class="device-top">
-          <div class="device-label">SmartRACK · PDU-01</div>
-          <div class="device-status"><div class="device-dot"></div>Online</div>
-        </div>
-        <div class="device-metric"><span class="device-metric-label">Voltaje</span><span class="device-metric-val">220.3 V</span></div>
-        <div class="device-metric"><span class="device-metric-label">Corriente</span><span class="device-metric-val">4.72 A</span></div>
-        <div class="device-metric"><span class="device-metric-label">Potencia</span><span class="device-metric-val">1038 W</span></div>
-        <div class="device-metric"><span class="device-metric-label">Temperatura</span><span class="device-metric-val">28.4 °C</span></div>
-        <div class="device-outlets">
-          <div class="outlet outlet-on"><span class="outlet-label">Toma 1</span><div class="outlet-toggle on"></div></div>
-          <div class="outlet outlet-on"><span class="outlet-label">Toma 2</span><div class="outlet-toggle on"></div></div>
-          <div class="outlet"><span class="outlet-label">Toma 3</span><div class="outlet-toggle off"></div></div>
-          <div class="outlet outlet-on"><span class="outlet-label">Toma 4</span><div class="outlet-toggle on"></div></div>
-        </div>
+
+    <!-- VISOR 3D -->
+    <div class="viewer-embed">
+      <span class="v-badge">SmartRACK ePDU · 1U Rack</span>
+      <div class="v-controls">
+        <button class="vbtn" id="vs-interior" aria-pressed="false">Interior</button>
+        <button class="vbtn" id="vs-spin"     aria-pressed="true" >Auto-giro</button>
+        <button class="vbtn" id="vs-reset"                        >Reset</button>
       </div>
+      <canvas id="gl-sol"></canvas>
+      <div class="v-hint">Arrastrá · Scroll para zoom</div>
     </div>
+
+    <!-- TEXTO -->
     <div>
       <div class="section-eyebrow">La solución</div>
       <div class="section-title">Una ePDU pensada para empresas reales.</div>
@@ -439,7 +332,7 @@
         <li>Control ON/OFF de cada toma individualmente desde el portal web, sin importar dónde estés.</li>
         <li>Medición eléctrica completa en tiempo real — voltaje, corriente, potencia, frecuencia y consumo acumulado.</li>
         <li>Monitoreo de temperatura y humedad interna del rack para prevenir fallas por sobrecalentamiento.</li>
-        <li>Alertas automáticas por correo ante cualquier condición anormal — sin necesidad de monitoreo manual.</li>
+        <li>Alertas automáticas por correo ante cualquier condición anormal — sin monitoreo manual.</li>
         <li>Funcionamiento local garantizado aunque se pierda la conexión a internet.</li>
         <li>Comunicación segura cifrada con TLS en todo momento.</li>
       </ul>
@@ -455,49 +348,32 @@
   </div>
   <div class="features-grid">
     <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(35,38,79,0.08);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#23264f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-          <path d="M16 3v4M8 3v4"/>
-          <circle cx="8" cy="14" r="1" fill="#23264f"/>
-          <circle cx="16" cy="14" r="1" fill="#23264f"/>
-        </svg>
-      </div>
+      <div class="feature-icon" style="background:rgba(35,38,79,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#23264f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4"/><circle cx="8" cy="14" r="1" fill="#23264f"/><circle cx="16" cy="14" r="1" fill="#23264f"/></svg></div>
       <h3>Control por toma</h3>
       <p>4 tomas inteligentes con control ON/OFF individual desde el portal web o desde la red local por IP.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(244,152,37,0.08);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#f49825" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      </div>
+      <div class="feature-icon" style="background:rgba(244,152,37,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#f49825" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
       <h3>Telemetría en tiempo real</h3>
       <p>Voltaje, corriente, potencia, factor de potencia, frecuencia, consumo acumulado, temperatura y humedad.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(220,38,38,0.08);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      </div>
+      <div class="feature-icon" style="background:rgba(220,38,38,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
       <h3>Alertas automáticas</h3>
       <p>Notificaciones por correo ante sobrecarga, temperatura elevada o voltaje fuera de rango. Sin intervención manual.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(95,125,190,0.08);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#5f7dbe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      </div>
+      <div class="feature-icon" style="background:rgba(95,125,190,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#5f7dbe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
       <h3>Seguridad multicapa</h3>
       <p>MQTT sobre TLS, HTTPS, bcrypt, CSRF tokens, rate limiting y logs de seguridad en producción.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(22,163,74,0.08);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-      </div>
+      <div class="feature-icon" style="background:rgba(22,163,74,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
       <h3>Buffer offline</h3>
-      <p>Si se pierde la conexión, el dispositivo guarda las lecturas localmente y las sincroniza automáticamente al reconectarse.</p>
+      <p>Si se pierde la conexión, el dispositivo guarda las lecturas localmente y las sincroniza al reconectarse.</p>
     </div>
     <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(139,92,246,0.08);">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      </div>
+      <div class="feature-icon" style="background:rgba(139,92,246,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
       <h3>Roles de acceso</h3>
       <p>Tres roles diferenciados — Administrador, Operador y Visualizador — con permisos específicos para cada uno.</p>
     </div>
@@ -555,47 +431,22 @@
       <h2>¿Querés llevar SmartRACK a tu infraestructura?</h2>
       <p>Completá el formulario y un representante de AucaTek se va a comunicar con vos para asesorarte sobre el plan que mejor se adapta a tus necesidades.</p>
       <div class="contacto-datos">
-        <div class="contacto-dato">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          info@aucatek.com.ar
-        </div>
-        <div class="contacto-dato">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8 9a16 16 0 0 0 6 6l.81-.81a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          11-5272-7200
-        </div>
-        <div class="contacto-dato">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          Av. Corrientes 1386, 9° piso, Buenos Aires
-        </div>
-        <div class="contacto-dato">
-          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          www.aucatek.com
-        </div>
+        <div class="contacto-dato"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>info@aucatek.com.ar</div>
+        <div class="contacto-dato"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8 9a16 16 0 0 0 6 6l.81-.81a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>11-5272-7200</div>
+        <div class="contacto-dato"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Av. Corrientes 1386, 9° piso, Buenos Aires</div>
+        <div class="contacto-dato"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>www.aucatek.com</div>
       </div>
     </div>
-
     <div class="form-card">
       <h3>Solicitar información</h3>
       <p>Respondemos en menos de 24 horas hábiles.</p>
       <form id="contactForm" action="https://formspree.io/f/xjyvpplb" method="POST">
         <div class="form-row">
-          <div class="form-group">
-            <label>Nombre *</label>
-            <input type="text" name="nombre" placeholder="Tu nombre" required/>
-          </div>
-          <div class="form-group">
-            <label>Apellido *</label>
-            <input type="text" name="apellido" placeholder="Tu apellido" required/>
-          </div>
+          <div class="form-group"><label>Nombre *</label><input type="text" name="nombre" placeholder="Tu nombre" required/></div>
+          <div class="form-group"><label>Apellido *</label><input type="text" name="apellido" placeholder="Tu apellido" required/></div>
         </div>
-        <div class="form-group">
-          <label>Email *</label>
-          <input type="email" name="email" placeholder="tu@empresa.com" required/>
-        </div>
-        <div class="form-group">
-          <label>Empresa</label>
-          <input type="text" name="empresa" placeholder="Nombre de tu empresa"/>
-        </div>
+        <div class="form-group"><label>Email *</label><input type="email" name="email" placeholder="tu@empresa.com" required/></div>
+        <div class="form-group"><label>Empresa</label><input type="text" name="empresa" placeholder="Nombre de tu empresa"/></div>
         <div class="form-group">
           <label>¿Qué te interesa?</label>
           <select name="interes">
@@ -606,10 +457,7 @@
             <option value="otro">Otro</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Mensaje</label>
-          <textarea name="mensaje" placeholder="Contanos sobre tu infraestructura o consulta..."></textarea>
-        </div>
+        <div class="form-group"><label>Mensaje</label><textarea name="mensaje" placeholder="Contanos sobre tu infraestructura o consulta..."></textarea></div>
         <button type="submit" class="form-submit">Enviar consulta</button>
         <div class="form-success" id="formSuccess">¡Mensaje enviado! Te contactamos pronto.</div>
       </form>
@@ -630,38 +478,251 @@
   <div class="footer-copy">© 2026 AucaTek — innovate IT · Instituto Leonardo Murialdo</div>
 </footer>
 
+<!-- ═══ THREE.JS ═══ -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
-  // Formulario con Formspree
-  const form = document.getElementById('contactForm');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = form.querySelector('.form-submit');
-    btn.textContent = 'Enviando...';
-    btn.disabled = true;
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
-      });
-      if (res.ok) {
-        form.reset();
-        document.getElementById('formSuccess').style.display = 'block';
-        btn.style.display = 'none';
-      } else {
-        btn.textContent = 'Error al enviar. Intentá de nuevo.';
-        btn.disabled = false;
-      }
-    } catch {
-      btn.textContent = 'Error al enviar. Intentá de nuevo.';
-      btn.disabled = false;
-    }
+/* ─── Visor 3D SmartRACK — sección Solución ─── */
+(function(){
+  'use strict';
+  var canvas=document.getElementById('gl-sol');
+  var wrap  =canvas.parentElement;
+  if(!window.THREE||!THREE.WebGLRenderer) return;
+  var renderer;
+  try{ renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true}); }
+  catch(e){ return; }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+  renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.outputEncoding=THREE.sRGBEncoding;
+
+  var scene =new THREE.Scene();
+  var camera=new THREE.PerspectiveCamera(42,1,0.1,200);
+  camera.position.set(3,5.5,9.5);
+  var controls=new THREE.OrbitControls(camera,renderer.domElement);
+  controls.enableDamping=true; controls.dampingFactor=0.07;
+  controls.minDistance=6; controls.maxDistance=30; controls.maxPolarAngle=Math.PI*0.53;
+  controls.target.set(0,0.60,0);
+  controls.autoRotate=true; controls.autoRotateSpeed=0.65;
+
+  scene.add(new THREE.HemisphereLight(0x7788aa,0x1a2030,0.65));
+  var key=new THREE.DirectionalLight(0xffffff,1.12);
+  key.position.set(7,14,8); key.castShadow=true;
+  key.shadow.mapSize.set(2048,2048); key.shadow.camera.near=2; key.shadow.camera.far=50;
+  key.shadow.camera.left=-14; key.shadow.camera.right=14; key.shadow.camera.top=10; key.shadow.camera.bottom=-10;
+  key.shadow.bias=-0.001; scene.add(key);
+  var fL=new THREE.DirectionalLight(0x5f7dbe,0.38); fL.position.set(-7,4,-5); scene.add(fL);
+  var rL=new THREE.DirectionalLight(0xf49825,0.20); rL.position.set(0,3,-12);  scene.add(rL);
+
+  function mat(c,r,m){return new THREE.MeshStandardMaterial({color:c,roughness:r!=null?r:0.65,metalness:m!=null?m:0});}
+  var root=new THREE.Group(); scene.add(root);
+  function mk(g,m){var me=new THREE.Mesh(g,m);me.castShadow=true;me.receiveShadow=true;return me;}
+  function add(g,m,x,y,z,p){var me=mk(g,m);me.position.set(x||0,y||0,z||0);(p||root).add(me);return me;}
+  function pos(me,x,y,z){me.position.set(x,y,z);return me;}
+  function tube(pts,r,m){
+    var c=new THREE.CatmullRomCurve3(pts.map(function(p){return new THREE.Vector3(p[0],p[1],p[2]);}));
+    root.add(mk(new THREE.TubeGeometry(c,20,r,7,false),m));
+  }
+
+  var M={
+    body:mat(0x2d3038,0.50,0.30),bodyDk:mat(0x1e2128,0.52,0.32),lid:mat(0x383d46,0.46,0.28),
+    ear:mat(0x363c44,0.44,0.42),earHole:mat(0x09090e,0.80,0.05),screwM:mat(0x8a9098,0.36,0.78),
+    outlet:mat(0x131518,0.70,0.08),outRing:mat(0x40444c,0.40,0.58),outSlot:mat(0x06070a,0.84,0.04),
+    conn:mat(0x1c2028,0.62,0.22),
+    ledOn: new THREE.MeshStandardMaterial({color:0xf49825,roughness:0.2,metalness:0,emissive:0xf49825,emissiveIntensity:0.85}),
+    ledFix:new THREE.MeshStandardMaterial({color:0x4ade80,roughness:0.2,metalness:0,emissive:0x4ade80,emissiveIntensity:0.65}),
+    ledOff:mat(0x1a1c22,0.75,0.05),label:mat(0xf0f0f4,0.88,0),
+    pcb:mat(0x1a6835,0.55,0.08),pcbPad:mat(0xc8a820,0.36,0.68),
+    esp32:mat(0x182840,0.50,0.06),esp32sh:mat(0xaab8c4,0.26,0.90),
+    chip:mat(0x1a1c20,0.62,0.14),ant:mat(0xc8ccd4,0.32,0.82),
+    w5500:mat(0x1e3480,0.50,0.10),w55ic:mat(0x8a6018,0.38,0.58),rj45:mat(0x84868c,0.44,0.56),
+    pzem:mat(0x102040,0.55,0.08),pzemC:mat(0x252a32,0.60,0.22),
+    relPcb:mat(0x1a6835,0.55,0.08),relBody:mat(0x0f1114,0.65,0.12),
+    relCoil:mat(0x1a308c,0.50,0.05),relTerm:mat(0x9a9298,0.38,0.68),
+    ct:mat(0x585c62,0.36,0.62),psu:mat(0x8c8e92,0.30,0.72),psuGrd:mat(0x1c2028,0.65,0.18),
+    mcb:mat(0x42465a,0.50,0.22),mcbBtn:mat(0xd02020,0.44,0.06),
+    wBlk:mat(0x141416,0.68,0.04),wRed:mat(0xb81a1a,0.50,0.04),wYel:mat(0xd4a400,0.50,0.04),
+    wBlu:mat(0x1a40a8,0.50,0.04),wGrn:mat(0x187a30,0.50,0.04),
+    wWht:mat(0xd0d2d6,0.55,0.04),wOrg:mat(0xf49825,0.50,0.04),stripe:null,
+  };
+  (function(){
+    var c=document.createElement('canvas');c.width=1024;c.height=48;
+    var x=c.getContext('2d');x.fillStyle='#f49825';x.fillRect(0,0,1024,48);
+    x.fillStyle='#23264f';x.font='bold 22px Montserrat,Arial,sans-serif';x.textBaseline='middle';
+    x.fillText('SmartRACK  ·  ePDU Inteligente  ·  AucaTek',24,24);
+    var tex=new THREE.CanvasTexture(c);tex.anisotropy=8;
+    M.stripe=new THREE.MeshStandardMaterial({map:tex,roughness:0.72,metalness:0});
+  })();
+
+  var BW=8.5,BH=1.10,BD=3.8,WT=0.10,FT=0.10;
+  var FTop=FT,ceilY=FT+BH,padY=FTop+0.12,frontZ=BD/2,backZ=-BD/2;
+
+  var encl=new THREE.Group();root.add(encl);
+  add(new THREE.BoxGeometry(BW,FT,BD),M.body,0,FT/2,0,encl);
+  add(new THREE.BoxGeometry(BW,BH,WT),M.bodyDk,0,FTop+BH/2,backZ+WT/2,encl);
+  add(new THREE.BoxGeometry(WT,BH,BD-2*WT),M.body,-BW/2+WT/2,FTop+BH/2,0,encl);
+  add(new THREE.BoxGeometry(WT,BH,BD-2*WT),M.body, BW/2-WT/2,FTop+BH/2,0,encl);
+  add(new THREE.BoxGeometry(BW,BH,WT),M.bodyDk,0,FTop+BH/2,frontZ-WT/2,encl);
+  var strH=0.13;
+  add(new THREE.BoxGeometry(BW-0.08,strH,0.006),M.stripe,0,ceilY-strH/2-0.04,frontZ-WT+0.003,encl);
+  var fLed=mk(new THREE.CylinderGeometry(0.048,0.048,0.06,12),M.ledFix);
+  fLed.rotation.x=Math.PI/2;fLed.position.set(-BW/2+0.40,FTop+BH*0.54,frontZ-WT/2+0.04);encl.add(fLed);
+
+  var earW=0.68,earH=BH+0.10,earD=0.20;
+  [-1,1].forEach(function(side){
+    var eg=new THREE.Group();encl.add(eg);
+    eg.add(pos(mk(new THREE.BoxGeometry(earW,earH,earD),M.ear),side*(BW/2+earW/2),FTop+BH/2,frontZ-earD/2));
+    var hg=new THREE.CylinderGeometry(0.082,0.082,earW+0.06,14);
+    [0.22,0.55,0.84].forEach(function(yf){
+      var h=mk(hg,M.earHole);h.rotation.z=Math.PI/2;h.position.set(side*(BW/2+earW/2),FTop+BH*yf,frontZ-earD/2+0.02);eg.add(h);
+    });
+    var sg=new THREE.CylinderGeometry(0.048,0.048,0.08,10);
+    [0.28,0.78].forEach(function(yf){
+      var s=mk(sg,M.screwM);s.rotation.z=Math.PI/2;s.position.set(side*(BW/2-0.07),FTop+BH*yf,frontZ-earD*0.5);encl.add(s);
+    });
   });
 
-  // Nav scroll effect
-  window.addEventListener('scroll', () => {
-    document.querySelector('nav').style.boxShadow = window.scrollY > 20 ? '0 4px 20px rgba(0,0,0,0.3)' : 'none';
+  add(new THREE.BoxGeometry(0.56,0.40,0.10),M.conn,-BW/2+1.4,FTop+BH/2,backZ+0.05,encl);
+  [[-0.10,0.08],[0.10,0.08],[0,-0.10]].forEach(function(p){add(new THREE.BoxGeometry(0.06,0.14,0.09),M.outSlot,-BW/2+1.4+p[0],FTop+BH/2+p[1],backZ+0.10,encl);});
+  add(new THREE.BoxGeometry(0.34,0.26,0.10),M.rj45,BW/2-1.0,FTop+BH/2,backZ+0.05,encl);
+  var ethL=mk(new THREE.CylinderGeometry(0.028,0.028,0.05,8),M.ledFix);ethL.rotation.x=Math.PI/2;ethL.position.set(BW/2-0.88,FTop+BH/2+0.10,backZ+0.05);encl.add(ethL);
+  var rstB=mk(new THREE.CylinderGeometry(0.052,0.052,0.06,10),M.mcbBtn);rstB.rotation.x=Math.PI/2;rstB.position.set(BW/2-1.85,FTop+BH*0.70,backZ+0.03);encl.add(rstB);
+
+  var lidPivot=new THREE.Group();lidPivot.position.set(0,ceilY,backZ+WT/2);root.add(lidPivot);
+  var lidMesh=mk(new THREE.BoxGeometry(BW+0.08,0.09,BD+0.04),M.lid);lidMesh.position.set(0,0.045,BD/2-WT/2);lidPivot.add(lidMesh);
+  for(var vi=0;vi<9;vi++){var vs=mk(new THREE.BoxGeometry(BW-1.0,0.012,0.045),M.psuGrd);vs.position.set(0,0.095,BD/2-WT/2-0.38+vi*0.32);lidPivot.add(vs);}
+  var lsgG=new THREE.CylinderGeometry(0.062,0.062,0.14,12);
+  [[-BW/2+0.28,0.22],[BW/2-0.28,0.22],[-BW/2+0.28,BD-0.28],[BW/2-0.28,BD-0.28]].forEach(function(p){var ls=mk(lsgG,M.screwM);ls.rotation.x=Math.PI/2;ls.position.set(p[0],0.115,p[1]-WT/2);lidPivot.add(ls);});
+
+  var fz=frontZ-WT/2,fy=FTop+BH/2;
+  var smartXs=[-3.0,-1.7,-0.4,0.9],fixedX=2.5;
+  function mkOtl(cx,isSmart,active){
+    var og=new THREE.Group();og.position.set(cx,fy,fz+0.002);encl.add(og);
+    var OW=0.78,OH=0.56,OD=0.07;
+    og.add(pos(mk(new THREE.BoxGeometry(OW,OH,OD),M.outlet),0,0,OD/2));
+    og.add(pos(mk(new THREE.CylinderGeometry(0.12,0.12,OD+0.01,16),M.outSlot),0,-0.11,OD/2+0.005));
+    og.add(pos(mk(new THREE.BoxGeometry(0.05,0.14,OD+0.01),M.outSlot),-0.14,0.11,OD/2+0.005));
+    og.add(pos(mk(new THREE.BoxGeometry(0.05,0.14,OD+0.01),M.outSlot), 0.14,0.11,OD/2+0.005));
+    og.add(pos(mk(new THREE.BoxGeometry(0.04,0.13,OD+0.01),M.outRing),-0.34,0,OD/2+0.005));
+    og.add(pos(mk(new THREE.BoxGeometry(0.04,0.13,OD+0.01),M.outRing), 0.34,0,OD/2+0.005));
+    var led=mk(new THREE.CylinderGeometry(0.036,0.036,0.04,10),isSmart?(active?M.ledOn:M.ledOff):M.ledFix);
+    led.rotation.x=Math.PI/2;led.position.set(0,OH/2-0.055,OD+0.022);og.add(led);
+    og.add(pos(mk(new THREE.BoxGeometry(0.20,0.048,0.008),M.label),0,-OH/2+0.055,OD+0.006));
+  }
+  smartXs.forEach(function(x){mkOtl(x,true,true);});mkOtl(fixedX,false,true);
+  add(new THREE.BoxGeometry(0.012,BH-0.18,0.06),M.outRing,(smartXs[3]+fixedX)/2,fy,fz+0.04,encl);
+
+  var inter=new THREE.Group();root.add(inter);
+  var pcbG=new THREE.Group();pcbG.position.set(1.2,padY,0.0);inter.add(pcbG);
+  pcbG.add(mk(new THREE.BoxGeometry(2.6,0.08,2.4),M.pcb));
+  var sfG=new THREE.CylinderGeometry(0.065,0.065,0.13,8);
+  [[-1.2,-1.1],[1.2,-1.1],[-1.2,1.1],[1.2,1.1]].forEach(function(p){pcbG.add(pos(mk(sfG,M.screwM),p[0],-0.10,p[1]));});
+  for(var vp=0;vp<7;vp++){pcbG.add(pos(mk(new THREE.CylinderGeometry(0.024,0.024,0.04,8),M.pcbPad),-1.20+vp*0.38,0.06,-1.15));pcbG.add(pos(mk(new THREE.CylinderGeometry(0.024,0.024,0.04,8),M.pcbPad),-1.20+vp*0.38,0.06,1.15));}
+  var espG=new THREE.Group();espG.position.set(-0.48,0.04,-0.48);pcbG.add(espG);
+  espG.add(mk(new THREE.BoxGeometry(1.46,0.06,0.68),M.esp32));
+  espG.add(pos(mk(new THREE.BoxGeometry(0.62,0.13,0.52),M.esp32sh),-0.26,0.10,-0.01));
+  espG.add(pos(mk(new THREE.BoxGeometry(0.17,0.04,0.17),M.chip),0.34,0.05,-0.01));
+  espG.add(pos(mk(new THREE.BoxGeometry(0.13,0.07,0.09),M.rj45),0.68,0.05,0.25));
+  espG.add(pos(mk(new THREE.BoxGeometry(1.16,0.06,0.06),M.pcbPad),0,0.06,0.30));
+  espG.add(pos(mk(new THREE.BoxGeometry(1.16,0.06,0.06),M.pcbPad),0,0.06,-0.30));
+  espG.add(pos(mk(new THREE.BoxGeometry(0.06,0.22,0.13),M.ant),-0.70,0.14,0));
+  var w5G=new THREE.Group();w5G.position.set(0.80,0.04,-0.62);pcbG.add(w5G);
+  w5G.add(mk(new THREE.BoxGeometry(0.72,0.06,0.60),M.w5500));
+  w5G.add(pos(mk(new THREE.BoxGeometry(0.28,0.12,0.26),M.w55ic),0,0.09,0));
+  var rj45w=mk(new THREE.BoxGeometry(0.28,0.22,0.21),M.rj45);rj45w.position.set(0.28,0.12,-0.18);w5G.add(rj45w);
+  w5G.add(pos(mk(new THREE.BoxGeometry(0.54,0.06,0.06),M.pcbPad),0,0.06,0.28));
+  var ahtG=new THREE.Group();ahtG.position.set(1.38,0.04,0.72);pcbG.add(ahtG);
+  ahtG.add(mk(new THREE.BoxGeometry(0.17,0.05,0.17),M.chip));ahtG.add(pos(mk(new THREE.BoxGeometry(0.11,0.08,0.11),M.pcb),0,0.07,0));
+
+  var relXs=[-3.2,-2.4,-1.6,-0.8];
+  relXs.forEach(function(rx){
+    var rG=new THREE.Group();rG.position.set(rx,padY,-1.0);inter.add(rG);
+    rG.add(mk(new THREE.BoxGeometry(0.66,0.06,1.12),M.relPcb));
+    var rb=mk(new THREE.BoxGeometry(0.48,0.38,0.50),M.relBody);rb.position.set(0,0.22,-0.16);rG.add(rb);
+    rG.add(pos(mk(new THREE.BoxGeometry(0.10,0.28,0.38),M.relCoil),-0.24,0.22,-0.16));
+    rG.add(pos(mk(new THREE.BoxGeometry(0.10,0.28,0.38),M.relCoil), 0.24,0.22,-0.16));
+    [-0.17,0,0.17].forEach(function(tx){rG.add(pos(mk(new THREE.BoxGeometry(0.10,0.10,0.08),M.relTerm),tx,0.42,-0.12));});
+    rG.add(pos(mk(new THREE.BoxGeometry(0.30,0.08,0.06),M.relTerm),0,0.08,0.50));
+    var rl=mk(new THREE.CylinderGeometry(0.036,0.036,0.05,10),M.ledOn);rl.rotation.x=Math.PI/2;rl.position.set(0,0.08,0.54);rG.add(rl);
+    rG.add(pos(mk(new THREE.BoxGeometry(0.42,0.055,0.008),M.label),0,0.04,-0.58));
   });
+
+  var pzG=new THREE.Group();pzG.position.set(-2.5,padY,0.78);inter.add(pzG);
+  pzG.add(mk(new THREE.BoxGeometry(1.22,0.10,0.86),M.pzem));
+  pzG.add(pos(mk(new THREE.BoxGeometry(1.18,0.20,0.82),M.pzemC),0,0.15,0));
+  [-0.38,-0.12,0.12,0.38].forEach(function(tx){pzG.add(pos(mk(new THREE.BoxGeometry(0.12,0.16,0.11),M.relTerm),tx,0.15,0.47));});
+
+  var ctG=new THREE.Group();ctG.position.set(-2.0,padY+0.26,1.15);inter.add(ctG);
+  var ctM=mk(new THREE.TorusGeometry(0.26,0.09,10,22),M.ct);ctM.rotation.y=Math.PI/2;ctG.add(ctM);
+  var ctW=mk(new THREE.CylinderGeometry(0.036,0.036,0.18,8),M.wBlk);ctW.rotation.x=Math.PI/2;ctW.rotation.y=Math.PI/2;ctG.add(ctW);
+
+  var mcbG=new THREE.Group();mcbG.position.set(-3.85,padY,-1.35);inter.add(mcbG);
+  mcbG.add(mk(new THREE.BoxGeometry(0.46,0.64,0.42),M.mcb));
+  mcbG.add(pos(mk(new THREE.BoxGeometry(0.14,0.24,0.06),M.mcbBtn),0,0.37,0.24));
+  mcbG.add(pos(mk(new THREE.BoxGeometry(0.32,0.10,0.08),M.relTerm),0,0.62,0.18));
+  mcbG.add(pos(mk(new THREE.BoxGeometry(0.32,0.10,0.08),M.relTerm),0,0.05,0.18));
+
+  var psuG=new THREE.Group();psuG.position.set(3.35,padY,0.0);inter.add(psuG);
+  psuG.add(pos(mk(new THREE.BoxGeometry(1.46,0.54,2.00),M.psu),0,0.27,0));
+  psuG.add(pos(mk(new THREE.BoxGeometry(1.46,0.04,2.00),M.psu),0,0.56,0));
+  for(var pv=0;pv<5;pv++){psuG.add(pos(mk(new THREE.BoxGeometry(1.28,0.03,0.06),M.psuGrd),0,0.58,-0.80+pv*0.35));}
+  [-0.48,-0.16,0.16,0.48].forEach(function(tx){psuG.add(pos(mk(new THREE.BoxGeometry(0.12,0.15,0.10),M.relTerm),tx,0.50,-1.06));});
+  psuG.add(pos(mk(new THREE.BoxGeometry(0.42,0.28,0.09),M.conn),0,0.27,1.06));
+
+  var iecY=FTop+BH/2,iecX=-BW/2+1.4;
+  tube([[iecX,iecY,backZ+0.12],[iecX,padY+0.56,-1.10],[-3.85,padY+0.56,-1.35]],0.042,M.wBlk);
+  tube([[iecX,iecY,backZ+0.12],[iecX-0.12,padY+0.52,-1.18],[-3.85,padY+0.52,-1.45]],0.040,M.wWht);
+  tube([[iecX+0.16,iecY,backZ+0.12],[-2.5,padY+0.22,-1.32]],0.034,M.wGrn);
+  tube([[-3.85,padY+0.58,-1.12],[-3.85,padY+0.65,-0.40],[-2.5,padY+0.48,0.40]],0.042,M.wRed);
+  tube([[-3.85,padY+0.50,-1.10],[0,padY+0.64,-0.80],[3.35,padY+0.50,1.00]],0.036,M.wBlk);
+  tube([[3.35,padY+0.47,-0.94],[2.0,padY+0.54,-0.48],[1.2,padY+0.28,-0.40]],0.028,M.wRed);
+  tube([[3.35,padY+0.43,-0.94],[1.8,padY+0.50,-0.40],[0.3,padY+0.22,-0.20]],0.028,M.wBlk);
+  tube([[2.0+0.28,padY+0.20,-0.62-0.16],[3.0,padY+0.44,-1.20],[BW/2-1.0,padY+0.26,backZ+0.18]],0.038,M.wBlu);
+  tube([[-2.5,padY+0.16,0.40],[-1.5,padY+0.30,0.26],[1.2-0.48+0.08,padY+0.18,0.20]],0.022,M.wYel);
+  tube([[-2.5,padY+0.13,0.40],[-1.3,padY+0.27,0.27],[1.2-0.48+0.05,padY+0.15,0.18]],0.022,M.wGrn);
+  var cc=[M.wBlu,M.wYel,M.wOrg,M.wGrn];
+  relXs.forEach(function(rx,ri){tube([[1.2-0.48+ri*0.07,padY+0.16,-0.12],[-0.2+ri*0.04,padY+0.30,-0.50],[rx,padY+0.16,-0.54],[rx,padY+0.12,0.48]],0.020,cc[ri]);});
+  relXs.forEach(function(rx,ri){
+    var ox=smartXs[ri];
+    tube([[rx,padY+0.40,-0.44],[rx,padY+0.50,0.18],[ox,padY+0.50,1.52],[ox,padY+0.32,1.68]],0.038,M.wBlk);
+    tube([[rx,padY+0.36,-0.44],[rx+0.06,padY+0.46,0.18],[ox+0.06,padY+0.46,1.52],[ox+0.06,padY+0.28,1.68]],0.038,M.wBlu);
+  });
+  tube([[fixedX,padY+0.38,1.64],[fixedX,padY+0.50,0.60],[3.0,padY+0.50,-0.50],[3.35,padY+0.44,-0.94]],0.038,M.wRed);
+
+  var gnd=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.ShadowMaterial({opacity:0.28}));
+  gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;scene.add(gnd);
+
+  var btnI=document.getElementById('vs-interior');
+  var btnS=document.getElementById('vs-spin');
+  var btnR=document.getElementById('vs-reset');
+  var lidOpen=0,lidTarget=0,LID_ANGLE=-2.2;
+
+  function setInterior(open){lidTarget=open?1:0;btnI.setAttribute('aria-pressed',open?'true':'false');btnI.textContent=open?'Cerrar':'Interior';}
+  btnI.addEventListener('click',function(){setInterior(lidTarget<0.5);});
+  btnS.addEventListener('click',function(){controls.autoRotate=!controls.autoRotate;btnS.setAttribute('aria-pressed',controls.autoRotate?'true':'false');});
+  var hP=camera.position.clone(),hT=controls.target.clone();
+  btnR.addEventListener('click',function(){camera.position.copy(hP);controls.target.copy(hT);controls.update();});
+  controls.addEventListener('start',function(){controls.autoRotate=false;btnS.setAttribute('aria-pressed','false');});
+
+  function resize(){var w=wrap.clientWidth,h=wrap.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+  window.addEventListener('resize',resize);resize();
+
+  function animate(){requestAnimationFrame(animate);lidOpen+=(lidTarget-lidOpen)*0.10;lidPivot.rotation.x=LID_ANGLE*lidOpen;controls.update();renderer.render(scene,camera);}
+  animate();
+})();
+</script>
+
+<script>
+  /* Formulario */
+  const form=document.getElementById('contactForm');
+  form.addEventListener('submit',async(e)=>{
+    e.preventDefault();const btn=form.querySelector('.form-submit');btn.textContent='Enviando...';btn.disabled=true;
+    try{const res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});
+      if(res.ok){form.reset();document.getElementById('formSuccess').style.display='block';btn.style.display='none';}
+      else{btn.textContent='Error al enviar. Intentá de nuevo.';btn.disabled=false;}
+    }catch{btn.textContent='Error al enviar. Intentá de nuevo.';btn.disabled=false;}
+  });
+  /* Nav scroll */
+  window.addEventListener('scroll',()=>{document.querySelector('nav').style.boxShadow=window.scrollY>20?'0 4px 20px rgba(0,0,0,0.3)':'none';});
 </script>
 </body>
 </html>
