@@ -4,11 +4,18 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SmartRACK · ePDU Inteligente · AucaTek</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <meta name="description" content="SmartRACK: ePDU inteligente para racks de servidores. Control ON/OFF por toma, telemetría eléctrica y ambiental en tiempo real y alertas automáticas."/>
+  <meta property="og:title" content="SmartRACK · ePDU Inteligente"/>
+  <meta property="og:description" content="Controlá y monitoreá la energía de tu rack desde cualquier lugar."/>
+  <meta property="og:type" content="website"/>
+  <meta name="theme-color" content="#23264f"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --navy:    #23264f;
       --navy2:   #1a1d3a;
+      --navy3:   #12142b;
       --orange:  #f49825;
       --celeste: #5f7dbe;
       --gray:    #6d6968;
@@ -17,10 +24,19 @@
       --muted:   #6b7280;
       --text:    #1f2937;
       --white:   #ffffff;
+      --ok:      #4ade80;
+      --bad:     #f87171;
+      --mono:    'JetBrains Mono', ui-monospace, monospace;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; scroll-padding-top: 70px; }
     body { font-family: 'Montserrat', sans-serif; background: var(--white); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+    button { font-family: inherit; }
+    code, .mono { font-family: var(--mono); }
+
+    /* Aparición al hacer scroll (solo si hay JS) */
+    .js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+    .js .reveal.in { opacity: 1; transform: none; }
 
     /* NAV */
     nav {
@@ -28,148 +44,160 @@
       background: rgba(35,38,79,0.97); backdrop-filter: blur(10px);
       height: 60px; display: flex; align-items: center;
       justify-content: space-between; padding: 0 6%;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06); transition: box-shadow .2s;
     }
     .nav-brand { font-size: 18px; font-weight: 800; color: #fff; letter-spacing: -0.5px; text-decoration: none; }
     .nav-brand span { color: var(--orange); }
-    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .brand-logo { height: 30px; width: auto; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
     .nav-links a { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.15s; }
-    .nav-links a:hover { color: var(--white); }
-    .nav-cta {
-      background: var(--orange); color: var(--navy) !important;
-      font-weight: 700 !important; padding: 8px 18px;
-      border-radius: 8px; transition: opacity 0.15s !important;
-    }
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
+    .nav-cta { background: var(--orange); color: var(--navy) !important; font-weight: 700 !important; padding: 8px 18px; border-radius: 8px; }
     .nav-cta:hover { opacity: 0.9; }
-    .nav-menu { display: none; background: none; border: none; cursor: pointer; color: #fff; font-size: 22px; }
+    .nav-menu { display: none; background: none; border: none; cursor: pointer; color: #fff; font-size: 22px; width: 40px; height: 40px; }
 
     /* HERO */
-    .hero {
-      min-height: 100vh; padding: 120px 6% 80px;
-      display: flex; align-items: center;
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0; z-index: 0;
-      background-image: url('bg-hero.jpg');
-      background-size: cover; background-position: center 30%;
-      filter: brightness(0.28) saturate(1.2);
-      pointer-events: none;
-    }
-    .hero::after {
-      content: ''; position: absolute; inset: 0; z-index: 0;
-      background: linear-gradient(to right,rgba(13,15,30,0.92) 0%,rgba(13,15,30,0.75) 50%,rgba(13,15,30,0.4) 100%);
-      pointer-events: none;
-    }
-    .hero-content { position: relative; z-index: 1; max-width: 640px; }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(244,152,37,0.12); border: 1px solid rgba(244,152,37,0.3);
-      border-radius: 20px; padding: 5px 14px;
-      font-size: 11px; font-weight: 700; color: var(--orange);
-      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 24px;
-    }
+    .hero { min-height: 100vh; padding: 120px 6% 80px; display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,0.85fr); gap: 56px; align-items: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; z-index: 0; background-image: url('bg-hero.jpg'); background-size: cover; background-position: center 30%; filter: brightness(0.28) saturate(1.2); pointer-events: none; }
+    .hero::after { content: ''; position: absolute; inset: 0; z-index: 0; background: linear-gradient(to right,rgba(13,15,30,0.94) 0%,rgba(13,15,30,0.78) 55%,rgba(13,15,30,0.55) 100%); pointer-events: none; }
+    .hero > * { position: relative; z-index: 1; }
+    .hero-content { max-width: 640px; }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(244,152,37,0.12); border: 1px solid rgba(244,152,37,0.3); border-radius: 20px; padding: 5px 14px; font-size: 11px; font-weight: 700; color: var(--orange); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 24px; }
     .hero-dot { width: 6px; height: 6px; background: var(--orange); border-radius: 50%; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .hero h1 {
-      font-size: clamp(36px, 6vw, 64px); font-weight: 900; color: #fff;
-      line-height: 1.05; letter-spacing: -2px; margin-bottom: 20px;
-    }
+    .hero h1 { font-size: clamp(36px, 5.6vw, 62px); font-weight: 900; color: #fff; line-height: 1.05; letter-spacing: -2px; margin-bottom: 20px; }
     .hero h1 span { color: var(--orange); }
     .hero-sub { font-size: 17px; color: rgba(255,255,255,0.65); line-height: 1.7; max-width: 520px; margin-bottom: 36px; }
     .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
-    .btn-primary {
-      background: var(--orange); color: var(--navy);
-      font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700;
-      padding: 14px 28px; border-radius: 10px; border: none; cursor: pointer;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s;
-    }
+    .btn-primary { background: var(--orange); color: var(--navy); font-size: 14px; font-weight: 700; padding: 14px 28px; border-radius: 10px; border: none; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(244,152,37,0.35); }
-    .btn-secondary {
-      background: rgba(255,255,255,0.08); color: #fff;
-      font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 600;
-      padding: 14px 28px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);
-      cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s;
-    }
+    .btn-secondary { background: rgba(255,255,255,0.08); color: #fff; font-size: 14px; font-weight: 600; padding: 14px 28px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.15s; }
     .btn-secondary:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
-    .hero-stats {
-      display: flex; gap: 36px; flex-wrap: wrap; margin-top: 48px; padding-top: 36px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-    }
+    .hero-stats { display: flex; gap: 36px; flex-wrap: wrap; margin-top: 48px; padding-top: 36px; border-top: 1px solid rgba(255,255,255,0.1); }
     .stat-num { font-size: 28px; font-weight: 800; color: var(--orange); line-height: 1; }
     .stat-label { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
 
+    /* FOTO DEL PRODUCTO (hero) */
+    .hero-photo { position: relative; perspective: 1200px; display: flex; align-items: center; justify-content: center; }
+    .hero-photo-inner {
+      width: 100%; border-radius: 20px; overflow: hidden; cursor: grab;
+      transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2,.8,.2,1);
+      box-shadow: 0 40px 90px -20px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.08);
+      animation: photoFloat 6s ease-in-out infinite;
+      will-change: transform;
+    }
+    .hero-photo-inner:active { cursor: grabbing; animation-play-state: paused; }
+    .hero-photo-inner.dragging { transition: none; animation-play-state: paused; }
+    .hero-photo-inner img { display: block; width: 100%; height: auto; pointer-events: none; -webkit-user-drag: none; user-select: none; }
+    @keyframes photoFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .hero-photo-hint {
+      position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+      font-size: 10px; color: rgba(255,255,255,0.4); white-space: nowrap;
+      background: rgba(4,6,14,0.55); border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 4px 12px;
+    }
+    @media (prefers-reduced-motion: reduce) { .hero-photo-inner { animation: none; } }
+
+
+    /* CINTA */
+    .ticker { background: var(--navy); overflow: hidden; border-top: 1px solid rgba(255,255,255,0.06); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 16px 0; }
+    .ticker-track { display: flex; width: max-content; animation: ticker 40s linear infinite; }
+    .ticker:hover .ticker-track { animation-play-state: paused; }
+    .ticker-item { display: flex; align-items: center; gap: 12px; padding: 0 28px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.8); white-space: nowrap; }
+    .ticker-item::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--orange); }
+    @keyframes ticker { to { transform: translateX(-50%); } }
+
     /* SECCIONES */
-    section { padding: 80px 6%; }
+    section { padding: 88px 6%; }
+    .alt { background: var(--bg); }
+    .dark { background: var(--navy3); color: #fff; }
     .section-eyebrow { font-size: 11px; font-weight: 700; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
     .section-title { font-size: clamp(28px, 4vw, 42px); font-weight: 800; color: var(--navy); letter-spacing: -1px; line-height: 1.1; margin-bottom: 16px; }
-    .section-sub { font-size: 16px; color: var(--muted); max-width: 560px; line-height: 1.7; margin-bottom: 48px; }
+    .dark .section-title { color: #fff; }
+    .section-sub { font-size: 16px; color: var(--muted); max-width: 600px; line-height: 1.7; margin-bottom: 48px; }
+    .dark .section-sub { color: rgba(255,255,255,0.6); }
     .centered { text-align: center; }
     .centered .section-sub { margin: 0 auto 48px; }
+    .wrap { max-width: 1200px; margin: 0 auto; }
 
     /* PROBLEMA */
-    .problemas { background: var(--bg); }
     .problema-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
     .problema-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 28px; }
     .problema-icon { width: 48px; height: 48px; border-radius: 12px; background: rgba(244,152,37,0.08); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
     .problema-icon svg { width: 24px; height: 24px; stroke: var(--orange); }
     .problema-card h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
     .problema-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .compare { margin-top: 56px; background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .compare-row { display: grid; grid-template-columns: 170px minmax(0,1fr) minmax(0,1fr); border-top: 1px solid var(--border); }
+    .compare-row:first-child { border-top: none; }
+    .compare-row > div { padding: 16px 22px; font-size: 13.5px; line-height: 1.55; }
+    .compare-head > div { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding-top: 18px; padding-bottom: 18px; }
+    .compare-head .c-old { color: var(--muted); }
+    .compare-head .c-new { color: var(--orange); }
+    .c-key { font-weight: 700; color: var(--navy); }
+    .c-old { color: var(--muted); }
+    .c-new { background: rgba(244,152,37,0.05); color: var(--text); font-weight: 500; }
+    .compare-head .c-new { background: rgba(244,152,37,0.08); }
 
-    /* SOLUCIÓN — visor 3D */
-    .solucion-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    /* ARQUITECTURA */
+    .arch { display: flex; align-items: stretch; gap: 0; }
+    .node { flex: 1 1 0; min-width: 0; background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 18px 14px; text-align: center; cursor: pointer; transition: all .2s; position: relative; }
+    .node:hover, .node[aria-selected="true"] { border-color: var(--orange); box-shadow: 0 8px 28px rgba(244,152,37,0.12); transform: translateY(-3px); }
+    .node-ic { width: 44px; height: 44px; border-radius: 12px; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; background: rgba(35,38,79,0.06); }
+    .node[aria-selected="true"] .node-ic { background: rgba(244,152,37,0.12); }
+    .node-ic svg { width: 22px; height: 22px; stroke: var(--navy); }
+    .node[aria-selected="true"] .node-ic svg { stroke: var(--orange); }
+    .node h4 { font-size: 13px; font-weight: 700; color: var(--navy); line-height: 1.3; }
+    .node span { display: block; font-size: 10.5px; color: var(--muted); margin-top: 4px; font-family: var(--mono); }
+    .link { flex: 0 0 38px; position: relative; align-self: center; height: 2px; background: repeating-linear-gradient(90deg, var(--border) 0 6px, transparent 6px 10px); }
+    .link::before, .link::after { content: ''; position: absolute; top: -3px; width: 8px; height: 8px; border-radius: 50%; }
+    .link::before { background: var(--orange); animation: flowR 1.8s linear infinite; }
+    .link::after { background: var(--celeste); animation: flowL 2.6s linear infinite; animation-delay: .9s; }
+    @keyframes flowR { from { left: -4px; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { left: calc(100% - 4px); opacity: 0; } }
+    @keyframes flowL { from { left: calc(100% - 4px); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { left: -4px; opacity: 0; } }
+    .arch-legend { display: flex; gap: 22px; justify-content: center; margin: 22px 0 0; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+    .arch-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+    .arch-detail { margin-top: 28px; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 24px; align-items: start; }
+    .arch-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 26px; }
+    .arch-card h3 { font-size: 18px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .arch-card p { font-size: 14px; color: var(--muted); }
+    .arch-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .tag { font-family: var(--mono); font-size: 11px; padding: 3px 9px; border-radius: 6px; background: rgba(35,38,79,0.06); color: var(--navy); }
+    .topics { background: var(--navy3); border-radius: 14px; padding: 22px 24px; color: #fff; }
+    .topics h4 { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+    .topic { display: grid; grid-template-columns: 22px minmax(0,1fr); gap: 8px; font-family: var(--mono); font-size: 12px; padding: 6px 0; border-top: 1px solid rgba(255,255,255,0.06); }
+    .topic:first-of-type { border-top: none; }
+    .topic .dir { color: var(--orange); }
+    .topic .dir.in { color: var(--celeste); }
+    .topic small { display: block; font-family: 'Montserrat', sans-serif; font-size: 11px; color: rgba(255,255,255,0.45); }
 
-    /* Contenedor del visor 3D embebido */
-    .viewer-embed {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 4/3;
-      min-height: 320px;
-      border-radius: 18px;
-      overflow: hidden;
-      background: radial-gradient(ellipse at 50% 28%, #131930 0%, #05060e 100%);
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 24px 60px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(244,152,37,0.06);
-    }
+    /* PRODUCTO / 3D */
+    .solucion-wrap { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,0.9fr); gap: 56px; align-items: start; }
+    .solucion-wrap--full { grid-template-columns: 1fr; max-width: 980px; margin: 0 auto; }
+    .viewer-embed--lg { aspect-ratio: 16/10; min-height: 440px; }
+
+    .viewer-embed { position: relative; width: 100%; aspect-ratio: 4/3; min-height: 320px; border-radius: 18px; overflow: hidden; background: radial-gradient(ellipse at 50% 28%, #131930 0%, #05060e 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 24px 60px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(244,152,37,0.06); }
     #gl-sol { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
-    .v-controls { position: absolute; top: 12px; right: 12px; z-index: 5; display: flex; gap: 6px; flex-wrap: wrap; }
-    .vbtn {
-      font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.06em; padding: 7px 12px;
-      border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(6,8,16,0.72); backdrop-filter: blur(8px);
-      color: rgba(255,255,255,0.80); transition: all 0.15s;
-    }
+    .v-controls { position: absolute; top: 12px; right: 12px; z-index: 5; display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+    .vbtn { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 7px 12px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.18); background: rgba(6,8,16,0.9); backdrop-filter: blur(8px); color: rgba(255,255,255,0.80); transition: all 0.15s; }
     .vbtn:hover { border-color: var(--orange); color: var(--orange); }
-    .vbtn[aria-pressed="true"] { background: rgba(244,152,37,0.14); border-color: var(--orange); color: var(--orange); }
-    .v-badge {
-      position: absolute; top: 12px; left: 12px; z-index: 5;
-      font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      color: rgba(255,255,255,0.55); background: rgba(4,6,14,0.70);
-      border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; padding: 4px 10px;
-    }
-    .v-hint {
-      position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-      z-index: 5; white-space: nowrap; pointer-events: none;
-      font-family: 'Montserrat', sans-serif; font-size: 9px;
-      color: rgba(255,255,255,0.30); background: rgba(4,6,14,0.55);
-      border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 4px 12px;
-    }
-
-    .check-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .vbtn[aria-pressed="true"] { background: #2b1f10; border-color: var(--orange); color: var(--orange); }
+    .v-badge { position: absolute; top: 12px; left: 12px; z-index: 5; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.55); background: rgba(4,6,14,0.70); border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; padding: 4px 10px; }
+    .v-hint { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 5; white-space: nowrap; pointer-events: none; font-size: 9px; color: rgba(255,255,255,0.4); background: rgba(4,6,14,0.55); border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; padding: 4px 12px; }
+    .hotspot { position: absolute; z-index: 6; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; border: 2px solid var(--orange); background: rgba(244,152,37,0.25); color: #fff; font-size: 11px; font-weight: 800; cursor: pointer; display: none; align-items: center; justify-content: center; transition: transform .15s, background .15s; }
+    .hotspot::after { content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 1px solid var(--orange); animation: ring 1.8s ease-out infinite; }
+    @keyframes ring { from { transform: scale(.7); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+    .hotspot:hover, .hotspot.sel { transform: scale(1.15); background: var(--orange); color: var(--navy); }
+    .hs-card { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 7; background: rgba(8,10,22,0.92); backdrop-filter: blur(10px); border: 1px solid rgba(244,152,37,0.35); border-radius: 12px; padding: 14px 40px 14px 16px; color: #fff; display: none; }
+    .hs-card h5 { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 2px; }
+    .hs-card p { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.5; }
+    .hs-close { position: absolute; top: 8px; right: 10px; background: none; border: none; color: rgba(255,255,255,0.6); font-size: 18px; cursor: pointer; width: 28px; height: 28px; }
+    .check-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
     .check-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--text); }
-    .check-list li::before {
-      content: ''; width: 20px; height: 20px; border-radius: 50%;
-      background: rgba(244,152,37,0.1); border: 1px solid rgba(244,152,37,0.3);
-      flex-shrink: 0; margin-top: 2px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f49825' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
-      background-size: 12px; background-repeat: no-repeat; background-position: center;
-    }
+    .check-list li::before { content: ''; width: 20px; height: 20px; border-radius: 50%; background: rgba(244,152,37,0.1); border: 1px solid rgba(244,152,37,0.3); flex-shrink: 0; margin-top: 2px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f49825' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E"); background-size: 12px; background-repeat: no-repeat; background-position: center; }
+    .check-list--row { flex-direction: row; flex-wrap: wrap; gap: 20px 36px; margin-top: 28px; justify-content: center; }
+    .check-list--row li { flex: 1 1 260px; max-width: 320px; }
 
     /* CARACTERÍSTICAS */
-    .features { background: var(--bg); }
     .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
     .feature-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 28px; transition: all 0.15s; }
     .feature-card:hover { border-color: var(--orange); box-shadow: 0 4px 20px rgba(244,152,37,0.08); transform: translateY(-2px); }
@@ -178,9 +206,25 @@
     .feature-card h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
     .feature-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    /* MODOS */
+    /* ROLES */
+    .roles { display: grid; grid-template-columns: minmax(0,0.9fr) minmax(0,1.1fr); gap: 40px; align-items: start; }
+    .tabs { display: flex; gap: 8px; background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 5px; margin-bottom: 22px; }
+    .tab { flex: 1; padding: 10px 8px; border: none; border-radius: 8px; background: none; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: all .15s; }
+    .tab[aria-selected="true"] { background: var(--navy); color: #fff; }
+    .role-desc h3 { font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 8px; }
+    .role-desc p { font-size: 14px; color: var(--muted); }
+    .perms { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .perm { display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 14px 20px; border-top: 1px solid var(--border); font-size: 13.5px; transition: background .2s, color .2s; }
+    .perm:first-child { border-top: none; }
+    .perm-st { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; transition: all .25s; }
+    .perm.yes .perm-st { background: rgba(22,163,74,0.12); color: #16a34a; }
+    .perm.no { color: #a0a4b2; }
+    .perm.no .perm-st { background: #f1f2f6; color: #c2c5d0; }
+    .perm small { display: inline-block; font-size: 10px; font-weight: 700; color: var(--orange); background: rgba(244,152,37,0.1); padding: 1px 7px; border-radius: 10px; margin-left: 6px; letter-spacing: .04em; }
+
+    /* PLANES */
     .modos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 800px; margin: 0 auto; }
-    .modo-card { border-radius: 16px; padding: 32px; border: 2px solid var(--border); position: relative; overflow: hidden; }
+    .modo-card { border-radius: 16px; padding: 32px; border: 2px solid var(--border); position: relative; overflow: hidden; background: var(--white); }
     .modo-card.premium { background: var(--navy); border-color: var(--orange); }
     .modo-badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
     .modo-normal .modo-badge { background: var(--bg); color: var(--muted); }
@@ -195,17 +239,34 @@
     .modo-normal .modo-features li { color: var(--text); }
     .modo-card.premium .modo-features li { color: rgba(255,255,255,0.85); }
     .modo-features li .check { color: #4ade80; font-size: 15px; flex-shrink: 0; }
-    .modo-features li .cross { color: var(--border); font-size: 15px; flex-shrink: 0; }
-    .modo-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; display: block; text-align: center; transition: all 0.15s; }
+    .modo-features li .cross { color: #c9ccd8; font-size: 15px; flex-shrink: 0; }
+    .modo-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; display: block; text-align: center; transition: all 0.15s; }
     .modo-normal .modo-btn { background: var(--bg); color: var(--navy); border: 1px solid var(--border); }
     .modo-normal .modo-btn:hover { border-color: var(--navy); }
     .modo-card.premium .modo-btn { background: var(--orange); color: var(--navy); }
     .modo-card.premium .modo-btn:hover { opacity: 0.9; }
 
+    /* STACK */
+    .stack { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 18px; }
+    .stack-col { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 22px; }
+    .stack-col h4 { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin-bottom: 14px; }
+    .stack-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .stack-col li { font-size: 13.5px; font-weight: 700; color: var(--navy); line-height: 1.3; }
+    .stack-col li span { display: block; font-size: 11.5px; font-weight: 500; color: var(--muted); }
+
+    /* FAQ */
+    .faq { max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+    .faq details { background: var(--white); border: 1px solid var(--border); border-radius: 12px; transition: border-color .15s; }
+    .faq details[open] { border-color: var(--orange); }
+    .faq summary { list-style: none; cursor: pointer; padding: 18px 54px 18px 22px; font-size: 14.5px; font-weight: 700; color: var(--navy); position: relative; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary::after { content: '+'; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; border-radius: 50%; background: var(--bg); color: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; transition: transform .2s, background .2s; }
+    .faq details[open] summary::after { content: '−'; background: var(--orange); color: var(--navy); }
+    .faq details p { padding: 0 22px 20px; font-size: 13.5px; color: var(--muted); line-height: 1.7; }
+
     /* CONTACTO */
-    .contacto { background: var(--bg); }
     .contacto-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: start; }
-    .contacto-info h2 { font-size: 32px; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; margin-bottom: 12px; }
+    .contacto-info h2 { font-size: 32px; font-weight: 800; color: var(--navy); letter-spacing: -0.5px; margin-bottom: 12px; line-height: 1.2; }
     .contacto-info p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
     .contacto-datos { display: flex; flex-direction: column; gap: 14px; }
     .contacto-dato { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text); }
@@ -219,44 +280,99 @@
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--celeste); }
     .form-group textarea { resize: vertical; min-height: 100px; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-submit { width: 100%; padding: 13px; background: var(--navy); color: var(--white); border: none; border-radius: 10px; font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s; margin-top: 4px; }
+    .form-submit { width: 100%; padding: 13px; background: var(--navy); color: var(--white); border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.15s; margin-top: 4px; }
     .form-submit:hover { background: var(--celeste); }
     .form-success { display: none; text-align: center; padding: 20px; color: #16a34a; font-size: 14px; font-weight: 600; }
 
-    /* FOOTER */
-    footer { background: var(--navy2); padding: 40px 6%; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    /* FOOTER + EQUIPO */
+    footer { background: var(--navy2); padding: 64px 6% 32px; color: #fff; }
+    .footer-top { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 48px; padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .footer-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 22px; }
+    .footer-label span { color: var(--orange); }
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 28px 20px; }
+    .team-grid + .footer-label { margin-top: 36px; }
+    .member { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; text-decoration: none; color: inherit; }
+    .member-photo { position: relative; width: 64px; height: 64px; }
+    .member-photo img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; display: block; color: transparent; font-size: 0; background: #2a2e55; border: 2px solid rgba(255,255,255,0.12); transition: border-color 0.2s, transform 0.2s; }
+    .member-li { position: absolute; right: -4px; bottom: -4px; width: 22px; height: 22px; border-radius: 50%; background: #0a66c2; border: 2px solid var(--navy2); display: flex; align-items: center; justify-content: center; opacity: 0; transform: scale(0.6); transition: all 0.2s; }
+    .member-li svg { width: 11px; height: 11px; fill: #fff; }
+    .member-name { font-size: 14px; font-weight: 700; line-height: 1.25; color: #fff; }
+    .member-role { font-size: 11px; font-weight: 500; color: rgba(255,255,255,0.5); line-height: 1.4; margin-top: -4px; }
+    a.member:hover .member-photo img, a.member:focus-visible .member-photo img { border-color: var(--orange); transform: translateY(-3px); }
+    a.member:hover .member-li, a.member:focus-visible .member-li { opacity: 1; transform: scale(1); }
+    a.member:hover .member-name { color: var(--orange); }
+    a.member:focus-visible { outline: 2px solid var(--orange); outline-offset: 6px; border-radius: 8px; }
+    .member:not(a) .member-li { display: none; }
+    .footer-col a { display: flex; align-items: center; gap: 6px; font-size: 13px; color: rgba(255,255,255,0.75); text-decoration: none; margin-bottom: 14px; transition: color 0.15s; }
+    .footer-col a:hover { color: var(--orange); }
+    .footer-col a svg { width: 12px; height: 12px; stroke: currentColor; opacity: 0.6; flex-shrink: 0; }
+    .footer-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding-top: 24px; }
     .footer-brand { font-size: 16px; font-weight: 800; color: #fff; }
     .footer-brand span { color: var(--orange); }
-    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
-    .footer-links a { font-size: 12px; color: rgba(255,255,255,0.5); text-decoration: none; }
-    .footer-links a:hover { color: rgba(255,255,255,0.9); }
-    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); width: 100%; }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.4); }
 
     /* RESPONSIVE */
-    @media (max-width: 768px) {
-      .solucion-wrap, .contacto-wrap { grid-template-columns: 1fr; }
-      .modos-grid { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
+    @media (max-width: 1100px) {
+      .nav-links { gap: 18px; }
+      .arch { flex-direction: column; }
+      .link { flex: 0 0 30px; width: 2px; height: auto; align-self: center; background: repeating-linear-gradient(180deg, var(--border) 0 6px, transparent 6px 10px); }
+      .link::before, .link::after { left: -3px; top: auto; }
+      .link::before { animation-name: flowD; }
+      .link::after { animation-name: flowU; }
+      @keyframes flowD { from { top: -4px; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { top: calc(100% - 4px); opacity: 0; } }
+      @keyframes flowU { from { top: calc(100% - 4px); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } to { top: -4px; opacity: 0; } }
+      .node { display: grid; grid-template-columns: 44px minmax(0,1fr); gap: 14px; text-align: left; align-items: center; }
+      .node-ic { margin: 0; }
+      .stack { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 960px) {
+      .nav-links { display: none; position: absolute; top: 60px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: var(--navy); padding: 8px 6% 16px; border-bottom: 1px solid rgba(255,255,255,0.08); box-shadow: 0 12px 30px rgba(0,0,0,.3); }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 12px 0; font-size: 15px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .nav-links .nav-cta { margin-top: 10px; text-align: center; border-bottom: none; }
       .nav-menu { display: block; }
-      .form-row { grid-template-columns: 1fr; }
+      .hero { grid-template-columns: 1fr; padding-top: 100px; }
+      .solucion-wrap, .contacto-wrap, .roles, .arch-detail { grid-template-columns: minmax(0,1fr); }
+      .footer-top { grid-template-columns: 1fr 1fr; } .footer-team { grid-column: 1 / -1; }
+    }
+    @media (max-width: 640px) {
+      section { padding: 64px 16px; }
+      .hero { padding-left: 16px; padding-right: 16px; }
+      nav, footer { padding-left: 16px; padding-right: 16px; }
+      .modos-grid, .form-row, .stack { grid-template-columns: 1fr; }
       .hero-stats { gap: 24px; }
-      .viewer-embed { aspect-ratio: 3/2; }
+      .viewer-embed { aspect-ratio: 1/1; }
+      .compare-row { grid-template-columns: 1fr; }
+      .compare-row > div { padding: 10px 18px; }
+      .compare-head { display: none; }
+      .c-key { padding-top: 16px !important; background: var(--bg); }
+      .c-old::before { content: 'Hoy: '; font-weight: 700; }
+      .c-new::before { content: 'Con SmartRACK: '; font-weight: 700; color: var(--orange); }
+      .footer-top { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ticker-track, .link::before, .link::after, .hotspot::after, .pill::before, .hero-dot { animation: none !important; }
+      .js .reveal { opacity: 1; transform: none; transition: none; }
+      html { scroll-behavior: auto; }
     }
   </style>
 </head>
 <body>
+<script>document.documentElement.classList.add('js');</script>
 
 <!-- NAV -->
 <nav>
-  <a class="nav-brand" href="#">Smart<span>RACK</span></a>
-  <div class="nav-links">
+  <a class="nav-brand" href="#"><img src="logo.png" alt="SmartRACK" class="brand-logo"></a>
+  <div class="nav-links" id="navLinks">
     <a href="#problema">Problema</a>
-    <a href="#solucion">Solución</a>
-    <a href="#caracteristicas">Características</a>
+    <a href="#como-funciona">Cómo funciona</a>
+    <a href="#producto">Producto</a>
     <a href="#modos">Planes</a>
+    <a href="#equipo">Equipo</a>
     <a href="#contacto" class="nav-cta">Contactar</a>
   </div>
-  <button class="nav-menu">☰</button>
+  <button class="nav-menu" id="navMenu" aria-label="Abrir menú" aria-expanded="false" aria-controls="navLinks">☰</button>
 </nav>
 
 <!-- HERO -->
@@ -267,127 +383,202 @@
     <p class="hero-sub">SmartRACK es la solución inteligente para monitorear y controlar la energía de tu rack de servidores en tiempo real, sin intervención física y con alertas automáticas ante cualquier anomalía.</p>
     <div class="hero-btns">
       <a href="#contacto" class="btn-primary">Solicitar información ›</a>
-      <a href="#solucion" class="btn-secondary">Ver cómo funciona</a>
+      <a href="#como-funciona" class="btn-secondary">Ver cómo funciona</a>
     </div>
     <div class="hero-stats">
-      <div><div class="stat-num">4</div><div class="stat-label">Tomas inteligentes</div></div>
-      <div><div class="stat-num">8</div><div class="stat-label">Métricas en tiempo real</div></div>
+      <div><div class="stat-num" data-count="4">4</div><div class="stat-label">Tomas inteligentes</div></div>
+      <div><div class="stat-num" data-count="8">8</div><div class="stat-label">Métricas en tiempo real</div></div>
       <div><div class="stat-num">24/7</div><div class="stat-label">Monitoreo continuo</div></div>
       <div><div class="stat-num">TLS</div><div class="stat-label">Comunicación segura</div></div>
     </div>
   </div>
+
+  <!-- Foto del producto -->
+  <div class="hero-photo" id="heroPhoto">
+    <div class="hero-photo-inner" id="heroPhotoInner">
+      <img src="pdu-photo.jpg" alt="SmartRACK ePDU · 5 tomas inteligentes"/>
+    </div>
+    <div class="hero-photo-hint" id="heroPhotoHint">Mové el mouse · arrastrá para inclinar</div>
+  </div>
 </section>
 
+<!-- CINTA -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span class="ticker-item">MQTT sobre TLS</span><span class="ticker-item">4 tomas con control ON/OFF</span><span class="ticker-item">Telemetría cada 30 s</span><span class="ticker-item">Alertas automáticas por mail</span><span class="ticker-item">Buffer offline</span><span class="ticker-item">Interfaz local por IP</span><span class="ticker-item">3 roles de usuario</span><span class="ticker-item">Exportación CSV</span><span class="ticker-item">Temperatura y humedad del rack</span><span class="ticker-item">Formato 1U</span>
+    <span class="ticker-item">MQTT sobre TLS</span><span class="ticker-item">4 tomas con control ON/OFF</span><span class="ticker-item">Telemetría cada 30 s</span><span class="ticker-item">Alertas automáticas por mail</span><span class="ticker-item">Buffer offline</span><span class="ticker-item">Interfaz local por IP</span><span class="ticker-item">3 roles de usuario</span><span class="ticker-item">Exportación CSV</span><span class="ticker-item">Temperatura y humedad del rack</span><span class="ticker-item">Formato 1U</span>
+  </div>
+</div>
+
 <!-- PROBLEMA -->
-<section class="problemas" id="problema">
-  <div class="section-eyebrow">El problema</div>
-  <div class="section-title">Gestionar un rack<br>no debería ser así.</div>
-  <p class="section-sub">Los administradores de infraestructura IT enfrentan estos problemas a diario y no tienen herramientas adecuadas para resolverlos.</p>
-  <div class="problema-grid">
-    <div class="problema-card">
-      <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-      <h3>Sin visibilidad del consumo</h3>
-      <p>No sabés cuánta energía está consumiendo cada equipo del rack ni si hay alguno que está generando sobrecarga hasta que es demasiado tarde.</p>
+<section class="alt" id="problema">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-eyebrow">El problema</div>
+      <div class="section-title">Gestionar un rack<br>no debería ser así.</div>
+      <p class="section-sub">Los administradores de infraestructura IT enfrentan estos problemas a diario y no tienen herramientas adecuadas para resolverlos.</p>
     </div>
-    <div class="problema-card">
-      <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-      <h3>Intervención física obligatoria</h3>
-      <p>Para apagar o encender un equipo conectado al rack hay que ir físicamente hasta la sala de servidores, lo que genera tiempos de respuesta inaceptables.</p>
+    <div class="problema-grid reveal">
+      <div class="problema-card">
+        <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <h3>Sin visibilidad del consumo</h3>
+        <p>No sabés cuánta energía está consumiendo cada equipo del rack ni si hay alguno que está generando sobrecarga hasta que es demasiado tarde.</p>
+      </div>
+      <div class="problema-card">
+        <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>Intervención física obligatoria</h3>
+        <p>Para apagar o encender un equipo conectado al rack hay que ir físicamente hasta la sala de servidores, lo que genera tiempos de respuesta inaceptables.</p>
+      </div>
+      <div class="problema-card">
+        <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h3>Sin datos históricos</h3>
+        <p>No hay registro del consumo eléctrico a lo largo del tiempo, lo que impide detectar tendencias, optimizar costos o justificar inversiones.</p>
+      </div>
+      <div class="problema-card">
+        <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <h3>Soluciones comerciales inaccesibles</h3>
+        <p>Las ePDUs comerciales de marcas como APC o Raritan tienen costos muy elevados y no ofrecen integración con sistemas propios de las empresas.</p>
+      </div>
     </div>
-    <div class="problema-card">
-      <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-      <h3>Sin datos históricos</h3>
-      <p>No hay registro del consumo eléctrico a lo largo del tiempo, lo que impide detectar tendencias, optimizar costos o justificar inversiones.</p>
-    </div>
-    <div class="problema-card">
-      <div class="problema-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-      <h3>Soluciones comerciales inaccesibles</h3>
-      <p>Las ePDUs comerciales de marcas como APC o Raritan tienen costos muy elevados y no ofrecen integración con sistemas propios de las empresas.</p>
+
+    <div class="compare reveal" role="table" aria-label="Comparación: hoy vs con SmartRACK">
+      <div class="compare-row compare-head" role="row"><div role="columnheader"></div><div class="c-old" role="columnheader">Hoy · sin ePDU</div><div class="c-new" role="columnheader">Con SmartRACK</div></div>
+      <div class="compare-row" role="row"><div class="c-key" role="cell">Consumo</div><div class="c-old" role="cell">No sabés qué está consumiendo el rack.</div><div class="c-new" role="cell">V, A, W, factor de potencia, Hz y kWh cada 30 segundos.</div></div>
+      <div class="compare-row" role="row"><div class="c-key" role="cell">Reiniciar un equipo</div><div class="c-old" role="cell">Hay que ir hasta la sala de servidores.</div><div class="c-new" role="cell">ON/OFF de cada toma desde el portal, estés donde estés.</div></div>
+      <div class="compare-row" role="row"><div class="c-key" role="cell">Fallas</div><div class="c-old" role="cell">Te enterás cuando algo ya se rompió.</div><div class="c-new" role="cell">Mail automático si el voltaje sale de 210–240 V o la temperatura pasa 45 °C.</div></div>
+      <div class="compare-row" role="row"><div class="c-key" role="cell">Historial</div><div class="c-old" role="cell">Sin registro de lo que pasó.</div><div class="c-new" role="cell">Gráficos históricos y exportación CSV por rango de fechas.</div></div>
+      <div class="compare-row" role="row"><div class="c-key" role="cell">Sin internet</div><div class="c-old" role="cell">Quedás a ciegas.</div><div class="c-new" role="cell">Control local por IP y buffer que guarda las lecturas hasta reconectar.</div></div>
+      <div class="compare-row" role="row"><div class="c-key" role="cell">Acceso</div><div class="c-old" role="cell">Cualquiera con la llave del rack.</div><div class="c-new" role="cell">3 roles con permisos y registro de cada acción de seguridad.</div></div>
     </div>
   </div>
 </section>
 
-<!-- SOLUCIÓN — con visor 3D -->
-<section id="solucion">
-  <div class="solucion-wrap">
-
-    <!-- VISOR 3D -->
-    <div class="viewer-embed">
-      <span class="v-badge">SmartRACK ePDU · 1U Rack</span>
-      <div class="v-controls">
-        <button class="vbtn" id="vs-interior" aria-pressed="false">Interior</button>
-        <button class="vbtn" id="vs-spin"     aria-pressed="true" >Auto-giro</button>
-        <button class="vbtn" id="vs-reset"                        >Reset</button>
-      </div>
-      <canvas id="gl-sol"></canvas>
-      <div class="v-hint">Arrastrá · Scroll para zoom</div>
+<!-- CÓMO FUNCIONA -->
+<section id="como-funciona">
+  <div class="wrap">
+    <div class="centered reveal">
+      <div class="section-eyebrow">Cómo funciona</div>
+      <div class="section-title">Del enchufe al portal,<br>en segundos.</div>
+      <p class="section-sub">Así viaja cada dato desde el rack hasta tu pantalla, y cada orden desde tu pantalla hasta la toma. Tocá cada bloque para ver qué hace.</p>
     </div>
 
-    <!-- TEXTO -->
-    <div>
-      <div class="section-eyebrow">La solución</div>
-      <div class="section-title">Una ePDU pensada para empresas reales.</div>
-      <p class="section-sub" style="margin-bottom:28px;">SmartRACK integra hardware de medición eléctrica con un portal web centralizado accesible desde cualquier dispositivo con internet.</p>
-      <ul class="check-list">
-        <li>Control ON/OFF de cada toma individualmente desde el portal web, sin importar dónde estés.</li>
-        <li>Medición eléctrica completa en tiempo real — voltaje, corriente, potencia, frecuencia y consumo acumulado.</li>
-        <li>Monitoreo de temperatura y humedad interna del rack para prevenir fallas por sobrecalentamiento.</li>
-        <li>Alertas automáticas por correo ante cualquier condición anormal — sin monitoreo manual.</li>
+    <div class="arch reveal" role="tablist" aria-label="Arquitectura del sistema" id="arch"></div>
+    <div class="arch-legend reveal"><span><i style="background:var(--orange)"></i>Telemetría (rack → portal)</span><span><i style="background:var(--celeste)"></i>Comandos (portal → rack)</span></div>
+
+    <div class="arch-detail reveal">
+      <div class="arch-card" id="archCard" role="tabpanel" aria-live="polite"></div>
+      <div class="topics">
+        <h4>Tópicos MQTT</h4>
+        <div class="topic"><span class="dir">→</span><div>pdu/{codigo}/telemetria/pzem<small>Datos eléctricos, cada 30 s</small></div></div>
+        <div class="topic"><span class="dir">→</span><div>pdu/{codigo}/telemetria/aht10<small>Temperatura y humedad, cada 60 s</small></div></div>
+        <div class="topic"><span class="dir in">←</span><div>pdu/{codigo}/comando/toma/{N}<small>Orden on / off desde el portal</small></div></div>
+        <div class="topic"><span class="dir">→</span><div>pdu/{codigo}/estado/toma/{N}<small>Confirmación del estado real de la toma</small></div></div>
+        <div class="topic"><span class="dir">→</span><div>pdu/{codigo}/alertas<small>Umbrales superados</small></div></div>
+        <div class="topic"><span class="dir">→</span><div>pdu/{codigo}/lwt<small>Last Will: avisa si el equipo se desconecta</small></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTO — visor 3D -->
+<section class="alt" id="producto">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="section-eyebrow">El producto</div>
+      <div class="section-title">Una ePDU pensada<br>para empresas reales.</div>
+      <p class="section-sub">SmartRACK integra hardware de medición eléctrica con un portal web centralizado. Abrí el gabinete y recorré cada componente por dentro.</p>
+    </div>
+    <div class="solucion-wrap solucion-wrap--full reveal">
+      <div class="viewer-embed viewer-embed--lg" id="viewer">
+        <span class="v-badge">SmartRACK ePDU · 1U Rack</span>
+        <div class="v-controls">
+          <button class="vbtn" id="vs-interior" aria-pressed="false">Ver interior</button>
+          <button class="vbtn" id="vs-spin" aria-pressed="true">Auto-giro</button>
+          <button class="vbtn" id="vs-reset">Reset</button>
+        </div>
+        <canvas id="gl-sol" aria-label="Modelo 3D interactivo de la ePDU SmartRACK"></canvas>
+        <div id="hotspots"></div>
+        <div class="hs-card" id="hsCard" role="dialog" aria-live="polite"><button class="hs-close" id="hsClose" aria-label="Cerrar">×</button><h5 id="hsTitle"></h5><p id="hsText"></p></div>
+        <div class="v-hint" id="vHint">Arrastrá para girar · Scroll para zoom</div>
+      </div>
+      <ul class="check-list check-list--row">
         <li>Funcionamiento local garantizado aunque se pierda la conexión a internet.</li>
-        <li>Comunicación segura cifrada con TLS en todo momento.</li>
+        <li>Hora exacta por NTP en cada lectura y comunicación cifrada con TLS.</li>
+        <li>Cada PDU se identifica con un código único derivado de su MAC.</li>
       </ul>
     </div>
   </div>
 </section>
 
 <!-- CARACTERÍSTICAS -->
-<section class="features" id="caracteristicas">
-  <div class="centered">
-    <div class="section-eyebrow">Características</div>
-    <div class="section-title">Todo lo que necesitás<br>en un solo dispositivo.</div>
-  </div>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(35,38,79,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#23264f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4"/><circle cx="8" cy="14" r="1" fill="#23264f"/><circle cx="16" cy="14" r="1" fill="#23264f"/></svg></div>
-      <h3>Control por toma</h3>
-      <p>4 tomas inteligentes con control ON/OFF individual desde el portal web o desde la red local por IP.</p>
+<section id="caracteristicas">
+  <div class="wrap">
+    <div class="centered reveal">
+      <div class="section-eyebrow">Características</div>
+      <div class="section-title">Todo lo que necesitás<br>en un solo dispositivo.</div>
+      <p class="section-sub">Hardware, firmware y portal web diseñados juntos para que funcionen como un solo producto.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(244,152,37,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#f49825" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-      <h3>Telemetría en tiempo real</h3>
-      <p>Voltaje, corriente, potencia, factor de potencia, frecuencia, consumo acumulado, temperatura y humedad.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(220,38,38,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-      <h3>Alertas automáticas</h3>
-      <p>Notificaciones por correo ante sobrecarga, temperatura elevada o voltaje fuera de rango. Sin intervención manual.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(95,125,190,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#5f7dbe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-      <h3>Seguridad multicapa</h3>
-      <p>MQTT sobre TLS, HTTPS, bcrypt, CSRF tokens, rate limiting y logs de seguridad en producción.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(22,163,74,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
-      <h3>Buffer offline</h3>
-      <p>Si se pierde la conexión, el dispositivo guarda las lecturas localmente y las sincroniza al reconectarse.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon" style="background:rgba(139,92,246,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-      <h3>Roles de acceso</h3>
-      <p>Tres roles diferenciados — Administrador, Operador y Visualizador — con permisos específicos para cada uno.</p>
+    <div class="features-grid reveal">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(35,38,79,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#23264f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4"/><circle cx="8" cy="14" r="1" fill="#23264f"/><circle cx="16" cy="14" r="1" fill="#23264f"/></svg></div>
+        <h3>Control por toma</h3>
+        <p>4 tomas inteligentes con control ON/OFF individual desde el portal web o desde la red local por IP.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(244,152,37,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#f49825" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Telemetría en tiempo real</h3>
+        <p>Voltaje, corriente, potencia, factor de potencia, frecuencia, consumo acumulado, temperatura y humedad.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(220,38,38,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <h3>Alertas automáticas</h3>
+        <p>Notificaciones por correo ante voltaje fuera de rango o temperatura elevada, además de avisos de licencia por vencer.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(95,125,190,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#5f7dbe" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Seguridad multicapa</h3>
+        <p>MQTT sobre TLS, HTTPS, bcrypt, tokens CSRF, rate limiting y logs de seguridad en producción.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(22,163,74,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+        <h3>Buffer offline</h3>
+        <p>Si se pierde la conexión, el dispositivo guarda las lecturas localmente y las sincroniza al reconectarse.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(139,92,246,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <h3>Roles de acceso</h3>
+        <p>Tres roles diferenciados — Administrador, Operador y Visualizador — con permisos específicos para cada uno.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- MODOS -->
-<section id="modos">
-  <div class="centered">
+<!-- ROLES -->
+<section class="alt" id="roles">
+  <div class="wrap roles">
+    <div class="reveal">
+      <div class="section-eyebrow">Roles de usuario</div>
+      <div class="section-title">Cada persona ve<br>lo que necesita.</div>
+      <p class="section-sub" style="margin-bottom:28px;">El portal tiene tres roles con permisos distintos. Elegí uno para ver qué puede hacer.</p>
+      <div class="tabs" role="tablist" aria-label="Roles">
+        <button class="tab" role="tab" aria-selected="true" data-role="admin">Administrador</button>
+        <button class="tab" role="tab" aria-selected="false" data-role="oper">Operador</button>
+        <button class="tab" role="tab" aria-selected="false" data-role="view">Visualizador</button>
+      </div>
+      <div class="role-desc" id="roleDesc" aria-live="polite"></div>
+    </div>
+    <div class="perms reveal" id="perms"></div>
+  </div>
+</section>
+
+<!-- PLANES -->
+<section class="alt" id="modos">
+  <div class="centered reveal">
     <div class="section-eyebrow">Planes</div>
     <div class="section-title">Elegí el plan que<br>se adapta a tu operación.</div>
     <p class="section-sub">Ambos planes incluyen el hardware SmartRACK. La diferencia está en las funcionalidades del software.</p>
   </div>
-  <div class="modos-grid">
+  <div class="modos-grid reveal">
     <div class="modo-card modo-normal">
       <div class="modo-badge">Normal</div>
       <div class="modo-price">Gratuito</div>
@@ -423,10 +614,68 @@
   </div>
 </section>
 
+<!-- STACK -->
+<section class="alt" id="stack">
+  <div class="wrap">
+    <div class="centered reveal">
+      <div class="section-eyebrow">Tecnología</div>
+      <div class="section-title">Con qué está hecho.</div>
+      <p class="section-sub">Componentes probados y software libre de punta a punta.</p>
+    </div>
+    <div class="stack reveal">
+      <div class="stack-col"><h4>Hardware</h4><ul>
+        <li>ESP32<span>Microcontrolador principal</span></li>
+        <li>PZEM-004T v3<span>Medición eléctrica por UART</span></li>
+        <li>AHT10<span>Temperatura y humedad por I2C</span></li>
+        <li>W5500<span>Ethernet cableado por SPI</span></li>
+        <li>4 relés<span>Uno por toma</span></li>
+      </ul></div>
+      <div class="stack-col"><h4>Firmware</h4><ul>
+        <li>Arduino core ESP32<span>Base del firmware</span></li>
+        <li>PubSubClient<span>Cliente MQTT</span></li>
+        <li>SSLClient · BearSSL<span>Cifrado TLS</span></li>
+        <li>ArduinoJson<span>Mensajes en JSON</span></li>
+        <li>NTPClient<span>Hora exacta</span></li>
+      </ul></div>
+      <div class="stack-col"><h4>Nube y backend</h4><ul>
+        <li>HiveMQ Cloud<span>Broker MQTT</span></li>
+        <li>PHP 8.2<span>Backend y worker MQTT</span></li>
+        <li>MySQL<span>17 tablas</span></li>
+        <li>PHPMailer<span>Alertas por correo</span></li>
+        <li>alwaysdata<span>Hosting en producción</span></li>
+      </ul></div>
+      <div class="stack-col"><h4>Portal web</h4><ul>
+        <li>Tabler<span>Interfaz del dashboard</span></li>
+        <li>Chart.js<span>Gráficos de consumo</span></li>
+        <li>JavaScript ES6+<span>Sin jQuery</span></li>
+        <li>Font Awesome<span>Íconos</span></li>
+        <li>Montserrat<span>Tipografía de marca</span></li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="centered reveal">
+    <div class="section-eyebrow">Preguntas frecuentes</div>
+    <div class="section-title">Lo que más nos preguntan.</div>
+  </div>
+  <div class="faq reveal" style="margin-top:40px;">
+    <details><summary>¿Qué pasa si se corta internet?</summary><p>El ESP32 sigue midiendo y se puede controlar desde la red local entrando a su IP (interfaz web con autenticación). Las lecturas se guardan en un buffer de 20 mediciones eléctricas y 10 ambientales, y al reconectar se republican marcadas con <code>is_buffered=1</code> para que el historial quede completo.</p></details>
+    <details><summary>¿Y si se cae el broker MQTT?</summary><p>Pasa lo mismo que sin internet: el equipo entra en modo local con buffer. Las tomas siguen funcionando y se pueden manejar desde la LAN.</p></details>
+    <details><summary>¿Cómo sé si una PDU está desconectada?</summary><p>El broker publica el mensaje Last Will (<code>pdu/{codigo}/lwt</code>) cuando el equipo se desconecta, y el portal marca la PDU como offline si pasan 5 minutos sin contacto.</p></details>
+    <details><summary>¿Cada cuánto se actualizan los datos?</summary><p>Los datos eléctricos se envían cada 30 segundos y los de temperatura y humedad cada 60. El portal se actualiza solo cada 10 segundos, sin recargar la página.</p></details>
+    <details><summary>¿Cuándo me llega una alerta?</summary><p>Cuando el voltaje baja de 210 V o supera 240 V, o cuando la temperatura del rack pasa los 45 °C. Se envía un solo mail por evento, sin duplicados.</p></details>
+    <details><summary>¿Qué pasa cuando vence la licencia Premium?</summary><p>Tenés un período de gracia de 30 días y te llega un aviso por mail antes del vencimiento. Las funciones del Modo Normal, como el control de tomas, siguen funcionando siempre.</p></details>
+    <details><summary>¿Puedo manejar varias PDUs?</summary><p>Sí. Cada PDU se registra con un código único derivado de su MAC. En la versión 1 el soporte es parcial y la versión 2 trae la gestión completa de múltiples PDUs.</p></details>
+  </div>
+</section>
+
 <!-- CONTACTO -->
-<section class="contacto" id="contacto">
-  <div class="contacto-wrap">
-    <div class="contacto-info">
+<section class="alt" id="contacto">
+  <div class="wrap contacto-wrap">
+    <div class="contacto-info reveal">
       <div class="section-eyebrow">Contacto</div>
       <h2>¿Querés llevar SmartRACK a tu infraestructura?</h2>
       <p>Completá el formulario y un representante de AucaTek se va a comunicar con vos para asesorarte sobre el plan que mejor se adapta a tus necesidades.</p>
@@ -437,19 +686,19 @@
         <div class="contacto-dato"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>www.aucatek.com</div>
       </div>
     </div>
-    <div class="form-card">
+    <div class="form-card reveal">
       <h3>Solicitar información</h3>
       <p>Respondemos en menos de 24 horas hábiles.</p>
       <form id="contactForm" action="https://formspree.io/f/xjyvpplb" method="POST">
         <div class="form-row">
-          <div class="form-group"><label>Nombre *</label><input type="text" name="nombre" placeholder="Tu nombre" required/></div>
-          <div class="form-group"><label>Apellido *</label><input type="text" name="apellido" placeholder="Tu apellido" required/></div>
+          <div class="form-group"><label for="fNombre">Nombre *</label><input id="fNombre" type="text" name="nombre" placeholder="Tu nombre" required/></div>
+          <div class="form-group"><label for="fApellido">Apellido *</label><input id="fApellido" type="text" name="apellido" placeholder="Tu apellido" required/></div>
         </div>
-        <div class="form-group"><label>Email *</label><input type="email" name="email" placeholder="tu@empresa.com" required/></div>
-        <div class="form-group"><label>Empresa</label><input type="text" name="empresa" placeholder="Nombre de tu empresa"/></div>
+        <div class="form-group"><label for="fEmail">Email *</label><input id="fEmail" type="email" name="email" placeholder="tu@empresa.com" required/></div>
+        <div class="form-group"><label for="fEmpresa">Empresa</label><input id="fEmpresa" type="text" name="empresa" placeholder="Nombre de tu empresa"/></div>
         <div class="form-group">
-          <label>¿Qué te interesa?</label>
-          <select name="interes">
+          <label for="fInteres">¿Qué te interesa?</label>
+          <select id="fInteres" name="interes">
             <option value="">Seleccioná una opción</option>
             <option value="hardware">Precio del hardware SmartRACK</option>
             <option value="premium">Plan Premium</option>
@@ -457,7 +706,7 @@
             <option value="otro">Otro</option>
           </select>
         </div>
-        <div class="form-group"><label>Mensaje</label><textarea name="mensaje" placeholder="Contanos sobre tu infraestructura o consulta..."></textarea></div>
+        <div class="form-group"><label for="fMensaje">Mensaje</label><textarea id="fMensaje" name="mensaje" placeholder="Contanos sobre tu infraestructura o consulta..."></textarea></div>
         <button type="submit" class="form-submit">Enviar consulta</button>
         <div class="form-success" id="formSuccess">¡Mensaje enviado! Te contactamos pronto.</div>
       </form>
@@ -465,238 +714,604 @@
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-brand">Smart<span>RACK</span></div>
-  <div class="footer-links">
-    <a href="https://aucateksmartrack.alwaysdata.net" target="_blank">Portal web</a>
-    <a href="https://ezemorgado07.github.io/smartrack/smartrack-docs/" target="_blank">Documentación</a>
-    <a href="https://ezemorgado07.github.io/faq-smartrack/" target="_blank">FAQ</a>
-    <a href="https://github.com/ezemorgado07/smartrack" target="_blank">GitHub</a>
-    <a href="mailto:info@aucatek.com.ar">Contacto</a>
+<footer id="equipo">
+  <div class="footer-top">
+
+    <!-- EQUIPO
+         Para activar el link de LinkedIn de cada integrante, reemplazá href="#"
+         por la URL de su perfil. Si queda en "#", la tarjeta se muestra sin link. -->
+    <div class="footer-team">
+      <div class="footer-label">Desarrolladores</div>
+      <div class="team-grid">
+        <a class="member" href="#" target="_blank" rel="noopener">
+          <div class="member-photo"><img src="https://ezemorgado07.github.io/smartrack/smartrack-docs/img/Morgado.png" alt="Ezequiel Morgado" loading="lazy"/><span class="member-li"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg></span></div>
+          <div class="member-name">Ezequiel Morgado</div>
+          <div class="member-role">Project Manager · Backend</div>
+        </a>
+        <a class="member" href="#" target="_blank" rel="noopener">
+          <div class="member-photo"><img src="https://ezemorgado07.github.io/smartrack/smartrack-docs/img/Spinelli.png" alt="Camilo Spinelli" loading="lazy"/><span class="member-li"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg></span></div>
+          <div class="member-name">Camilo Spinelli</div>
+          <div class="member-role">Dev Firmware</div>
+        </a>
+        <a class="member" href="#" target="_blank" rel="noopener">
+          <div class="member-photo"><img src="https://ezemorgado07.github.io/smartrack/smartrack-docs/img/Hermosilla.png" alt="Sofía Hermosilla" loading="lazy"/><span class="member-li"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg></span></div>
+          <div class="member-name">Sofía Hermosilla</div>
+          <div class="member-role">Dev Frontend · UX/UI</div>
+        </a>
+        <a class="member" href="#" target="_blank" rel="noopener">
+          <div class="member-photo"><img src="https://ezemorgado07.github.io/smartrack/smartrack-docs/img/Martini.png" alt="Violeta Martini" loading="lazy"/><span class="member-li"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg></span></div>
+          <div class="member-name">Violeta Martini</div>
+          <div class="member-role">Diseño Industrial</div>
+        </a>
+        <a class="member" href="#" target="_blank" rel="noopener">
+          <div class="member-photo"><img src="https://ezemorgado07.github.io/smartrack/smartrack-docs/img/Marticorena.png" alt="Ignacio Marticorena" loading="lazy"/><span class="member-li"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg></span></div>
+          <div class="member-name">Ignacio Marticorena</div>
+          <div class="member-role">Multimedia</div>
+        </a>
+        <a class="member" href="#" target="_blank" rel="noopener">
+          <div class="member-photo"><img src="https://ezemorgado07.github.io/smartrack/smartrack-docs/img/Sparta.png" alt="Federico Sparta" loading="lazy"/><span class="member-li"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg></span></div>
+          <div class="member-name">Federico Sparta</div>
+          <div class="member-role">Electrónica</div>
+        </a>
+        <a class="member" href="#" target="_blank" rel="noopener">
+          <div class="member-photo"><img src="https://ezemorgado07.github.io/smartrack/smartrack-docs/img/Villarosa.png" alt="Santiago Villarosa" loading="lazy"/><span class="member-li"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg></span></div>
+          <div class="member-name">Santiago Villarosa</div>
+          <div class="member-role">Electrónica</div>
+        </a>
+      </div>
+
+      <div class="footer-label">Asesoría y cliente</div>
+      <div class="team-grid">
+        <a class="member" href="#" target="_blank" rel="noopener">
+          <div class="member-photo"><img src="https://ezemorgado07.github.io/smartrack/smartrack-docs/img/Barral.png" alt="Martín Barral" loading="lazy"/><span class="member-li"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg></span></div>
+          <div class="member-name">Martín Barral</div>
+          <div class="member-role">Asesor Técnico</div>
+        </a>
+        <a class="member" href="#" target="_blank" rel="noopener">
+          <div class="member-photo"><img src="https://ezemorgado07.github.io/smartrack/smartrack-docs/img/Diego.png" alt="Diego Martini" loading="lazy"/><span class="member-li"><svg viewBox="0 0 24 24"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V21h-4v-5.5c0-1.3-.02-3-1.83-3-1.83 0-2.11 1.43-2.11 2.9V21H9z"/></svg></span></div>
+          <div class="member-name">Diego Martini</div>
+          <div class="member-role">CEO AucaTek · Cliente</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-label">Proyecto</div>
+      <a href="https://aucateksmartrack.alwaysdata.net" target="_blank" rel="noopener">Portal web en vivo <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></a>
+      <a href="https://github.com/ezemorgado07/smartrack" target="_blank" rel="noopener">Repositorio en GitHub <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></a>
+      <a href="#solucion">Modelo 3D</a>
+    </div>
+
+    <div class="footer-col">
+      <div class="footer-label">Recursos</div>
+      <a href="https://ezemorgado07.github.io/smartrack/smartrack-docs/" target="_blank" rel="noopener">Documentación técnica <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></a>
+      <a href="https://ezemorgado07.github.io/faq-smartrack/" target="_blank" rel="noopener">Preguntas frecuentes <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></a>
+      <a href="mailto:info@aucatek.com.ar">info@aucatek.com.ar</a>
+    </div>
   </div>
-  <div class="footer-copy">© 2026 AucaTek — innovate IT · Instituto Leonardo Murialdo</div>
+
+  <div class="footer-bottom">
+    <div class="footer-brand">Smart<span>RACK</span></div>
+    <div class="footer-copy">© 2026 AucaTek — innovate IT · Instituto Leonardo Murialdo</div>
+  </div>
 </footer>
 
-<!-- ═══ THREE.JS ═══ -->
+<!-- ═══ LIBRERÍAS ═══ -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/geometries/RoundedBoxGeometry.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 <script>
-/* ─── Visor 3D SmartRACK — sección Solución ─── */
+/* ═════════════════════════════════════════════
+   Visor 3D SmartRACK — modelo detallado
+   Misma disposición del rack: 4 tomas + 1 fija, orejas 1U,
+   tapa con bisagra trasera y electrónica interna.
+   Expone window.SR3D.setOutlet(i, on).
+   ═════════════════════════════════════════════ */
 (function(){
   'use strict';
   var canvas=document.getElementById('gl-sol');
   var wrap  =canvas.parentElement;
-  if(!window.THREE||!THREE.WebGLRenderer) return;
+  if(!window.THREE||!THREE.WebGLRenderer||!THREE.OrbitControls) return;
   var renderer;
   try{ renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true}); }
   catch(e){ return; }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
   renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   renderer.outputEncoding=THREE.sRGBEncoding;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
+  var ANISO=renderer.capabilities.getMaxAnisotropy();
 
   var scene =new THREE.Scene();
-  var camera=new THREE.PerspectiveCamera(42,1,0.1,200);
-  camera.position.set(3,5.5,9.5);
+  if(THREE.RoomEnvironment){
+    var pm=new THREE.PMREMGenerator(renderer);
+    scene.environment=pm.fromScene(new THREE.RoomEnvironment(),0.04).texture;
+  }
+  var camera=new THREE.PerspectiveCamera(40,1,0.1,200);
+  camera.position.set(3.2,5.6,9.6);
   var controls=new THREE.OrbitControls(camera,renderer.domElement);
   controls.enableDamping=true; controls.dampingFactor=0.07;
-  controls.minDistance=6; controls.maxDistance=30; controls.maxPolarAngle=Math.PI*0.53;
-  controls.target.set(0,0.60,0);
-  controls.autoRotate=true; controls.autoRotateSpeed=0.65;
+  controls.minDistance=4; controls.maxDistance=28; controls.maxPolarAngle=Math.PI*0.53;
+  controls.target.set(0,0.55,0);
+  controls.autoRotate=true; controls.autoRotateSpeed=0.6;
 
-  scene.add(new THREE.HemisphereLight(0x7788aa,0x1a2030,0.65));
-  var key=new THREE.DirectionalLight(0xffffff,1.12);
-  key.position.set(7,14,8); key.castShadow=true;
-  key.shadow.mapSize.set(2048,2048); key.shadow.camera.near=2; key.shadow.camera.far=50;
-  key.shadow.camera.left=-14; key.shadow.camera.right=14; key.shadow.camera.top=10; key.shadow.camera.bottom=-10;
-  key.shadow.bias=-0.001; scene.add(key);
-  var fL=new THREE.DirectionalLight(0x5f7dbe,0.38); fL.position.set(-7,4,-5); scene.add(fL);
-  var rL=new THREE.DirectionalLight(0xf49825,0.20); rL.position.set(0,3,-12);  scene.add(rL);
+  scene.add(new THREE.HemisphereLight(0x8899bb,0x10131c,0.35));
+  var key=new THREE.DirectionalLight(0xffffff,1.25);
+  key.position.set(6,14,9); key.castShadow=true;
+  key.shadow.mapSize.set(2048,2048); key.shadow.camera.near=2; key.shadow.camera.far=40;
+  key.shadow.camera.left=-8; key.shadow.camera.right=8; key.shadow.camera.top=6; key.shadow.camera.bottom=-6;
+  key.shadow.bias=-0.0004; key.shadow.normalBias=0.02; scene.add(key);
+  var fL=new THREE.DirectionalLight(0x7f9be0,0.35); fL.position.set(-8,5,-4); scene.add(fL);
+  var rL=new THREE.DirectionalLight(0xf49825,0.25); rL.position.set(0,4,-12); scene.add(rL);
 
-  function mat(c,r,m){return new THREE.MeshStandardMaterial({color:c,roughness:r!=null?r:0.65,metalness:m!=null?m:0});}
+  /* ── Utilidades ── */
   var root=new THREE.Group(); scene.add(root);
-  function mk(g,m){var me=new THREE.Mesh(g,m);me.castShadow=true;me.receiveShadow=true;return me;}
-  function add(g,m,x,y,z,p){var me=mk(g,m);me.position.set(x||0,y||0,z||0);(p||root).add(me);return me;}
-  function pos(me,x,y,z){me.position.set(x,y,z);return me;}
-  function tube(pts,r,m){
-    var c=new THREE.CatmullRomCurve3(pts.map(function(p){return new THREE.Vector3(p[0],p[1],p[2]);}));
-    root.add(mk(new THREE.TubeGeometry(c,20,r,7,false),m));
+  var TEXS=[];
+  function ctex(w,h,draw,color){
+    var c=document.createElement('canvas');c.width=w;c.height=h;var g=c.getContext('2d');draw(g,w,h);
+    var t=new THREE.CanvasTexture(c);if(color!==false) t.encoding=THREE.sRGBEncoding;t.anisotropy=ANISO;
+    TEXS.push({g:g,w:w,h:h,draw:draw,t:t});return t;
   }
+  /* cuando carga Montserrat, se redibujan los textos de las texturas */
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(function(){TEXS.forEach(function(o){if(/txt\(/.test(o.draw.toString())){o.g.clearRect(0,0,o.w,o.h);o.draw(o.g,o.w,o.h);o.t.needsUpdate=true;}});});}
+  function std(o){o=o||{};var m=new THREE.MeshStandardMaterial(o);if(o.envMapIntensity==null) m.envMapIntensity=0.55;return m;}
+  function phys(o){return new THREE.MeshPhysicalMaterial(o);}
+  function mk(g,m,cast){var me=new THREE.Mesh(g,m);me.castShadow=cast!==false;me.receiveShadow=true;return me;}
+  function at(me,x,y,z,p){me.position.set(x,y,z);if(p) p.add(me);return me;}
+  function box(w,h,d){return new THREE.BoxGeometry(w,h,d);}
+  function rbox(w,h,d,r,s){
+    if(THREE.RoundedBoxGeometry){r=Math.min(r,w/2-1e-3,h/2-1e-3,d/2-1e-3);return new THREE.RoundedBoxGeometry(w,h,d,s||3,r);}
+    return box(w,h,d);
+  }
+  function cyl(rt,rb,h,s){return new THREE.CylinderGeometry(rt,rb,h,s||16);}
+  function rrShape(w,h,r){var s=new THREE.Shape(),x=-w/2,y=-h/2;s.moveTo(x+r,y);s.lineTo(x+w-r,y);s.quadraticCurveTo(x+w,y,x+w,y+r);s.lineTo(x+w,y+h-r);s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);s.lineTo(x+r,y+h);s.quadraticCurveTo(x,y+h,x,y+h-r);s.lineTo(x,y+r);s.quadraticCurveTo(x,y,x+r,y);return s;}
+  function slotPath(cx,cy,w,h){var r=h/2,p=new THREE.Path();p.moveTo(cx-w/2+r,cy-r);p.lineTo(cx+w/2-r,cy-r);p.absarc(cx+w/2-r,cy,r,-Math.PI/2,Math.PI/2,false);p.lineTo(cx-w/2+r,cy+r);p.absarc(cx-w/2+r,cy,r,Math.PI/2,Math.PI*1.5,false);return p;}
+  function noise(g,w,h,a,n){for(var i=0;i<n;i++){g.fillStyle='rgba('+(Math.random()<.5?'255,255,255':'0,0,0')+','+(Math.random()*a)+')';g.fillRect(Math.random()*w,Math.random()*h,1+Math.random()*2,1+Math.random()*2);}}
+  function txt(g,s,x,y,size,color,weight,align,font){g.font=(weight||600)+' '+size+'px '+(font||'Montserrat, Arial, sans-serif');g.fillStyle=color;g.textAlign=align||'left';g.textBaseline='middle';g.fillText(s,x,y);}
 
-  var M={
-    body:mat(0x2d3038,0.50,0.30),bodyDk:mat(0x1e2128,0.52,0.32),lid:mat(0x383d46,0.46,0.28),
-    ear:mat(0x363c44,0.44,0.42),earHole:mat(0x09090e,0.80,0.05),screwM:mat(0x8a9098,0.36,0.78),
-    outlet:mat(0x131518,0.70,0.08),outRing:mat(0x40444c,0.40,0.58),outSlot:mat(0x06070a,0.84,0.04),
-    conn:mat(0x1c2028,0.62,0.22),
-    ledOn: new THREE.MeshStandardMaterial({color:0xf49825,roughness:0.2,metalness:0,emissive:0xf49825,emissiveIntensity:0.85}),
-    ledFix:new THREE.MeshStandardMaterial({color:0x4ade80,roughness:0.2,metalness:0,emissive:0x4ade80,emissiveIntensity:0.65}),
-    ledOff:mat(0x1a1c22,0.75,0.05),label:mat(0xf0f0f4,0.88,0),
-    pcb:mat(0x1a6835,0.55,0.08),pcbPad:mat(0xc8a820,0.36,0.68),
-    esp32:mat(0x182840,0.50,0.06),esp32sh:mat(0xaab8c4,0.26,0.90),
-    chip:mat(0x1a1c20,0.62,0.14),ant:mat(0xc8ccd4,0.32,0.82),
-    w5500:mat(0x1e3480,0.50,0.10),w55ic:mat(0x8a6018,0.38,0.58),rj45:mat(0x84868c,0.44,0.56),
-    pzem:mat(0x102040,0.55,0.08),pzemC:mat(0x252a32,0.60,0.22),
-    relPcb:mat(0x1a6835,0.55,0.08),relBody:mat(0x0f1114,0.65,0.12),
-    relCoil:mat(0x1a308c,0.50,0.05),relTerm:mat(0x9a9298,0.38,0.68),
-    ct:mat(0x585c62,0.36,0.62),psu:mat(0x8c8e92,0.30,0.72),psuGrd:mat(0x1c2028,0.65,0.18),
-    mcb:mat(0x42465a,0.50,0.22),mcbBtn:mat(0xd02020,0.44,0.06),
-    wBlk:mat(0x141416,0.68,0.04),wRed:mat(0xb81a1a,0.50,0.04),wYel:mat(0xd4a400,0.50,0.04),
-    wBlu:mat(0x1a40a8,0.50,0.04),wGrn:mat(0x187a30,0.50,0.04),
-    wWht:mat(0xd0d2d6,0.55,0.04),wOrg:mat(0xf49825,0.50,0.04),stripe:null,
-  };
-  (function(){
-    var c=document.createElement('canvas');c.width=1024;c.height=48;
-    var x=c.getContext('2d');x.fillStyle='#f49825';x.fillRect(0,0,1024,48);
-    x.fillStyle='#23264f';x.font='bold 22px Montserrat,Arial,sans-serif';x.textBaseline='middle';
-    x.fillText('SmartRACK  ·  ePDU Inteligente  ·  AucaTek',24,24);
-    var tex=new THREE.CanvasTexture(c);tex.anisotropy=8;
-    M.stripe=new THREE.MeshStandardMaterial({map:tex,roughness:0.72,metalness:0});
-  })();
+  /* ── Texturas ── */
+  var T={};
+  T.brushed=ctex(512,512,function(g,w,h){g.fillStyle='#808489';g.fillRect(0,0,w,h);for(var i=0;i<1400;i++){var y=Math.random()*h,l=80+Math.random()*90;g.strokeStyle='rgba('+l+','+(l+3)+','+(l+8)+','+(0.15+Math.random()*0.25)+')';g.lineWidth=Math.random()*1.4;g.beginPath();g.moveTo(0,y);g.lineTo(w,y+Math.random()*2-1);g.stroke();}});
+  T.brushed.wrapS=T.brushed.wrapT=THREE.RepeatWrapping;T.brushed.repeat.set(3,1);
+  function pcbTex(w,h,base,trace,draw){
+    return ctex(w,h,function(g){
+      g.fillStyle=base;g.fillRect(0,0,w,h);noise(g,w,h,.05,4000);
+      g.strokeStyle=trace;g.lineCap='round';g.lineJoin='round';
+      for(var i=0;i<38;i++){g.lineWidth=2+Math.random()*4;g.beginPath();var x=Math.random()*w,y=Math.random()*h;g.moveTo(x,y);for(var k=0;k<3;k++){if(Math.random()<.5)x+=(Math.random()-.5)*w*.5;else y+=(Math.random()-.5)*h*.5;var d=(Math.random()-.5)*40;g.lineTo(x+d,y+d);g.lineTo(x,y);}g.stroke();}
+      for(var j=0;j<70;j++){g.fillStyle='rgba(220,190,90,.9)';g.beginPath();g.arc(Math.random()*w,Math.random()*h,2+Math.random()*3,0,7);g.fill();}
+      if(draw) draw(g,w,h);
+    });
+  }
+  T.mainPcb=pcbTex(1040,960,'#0c5a2c','#127a3c',function(g,w,h){
+    g.strokeStyle='rgba(255,255,255,.75)';g.lineWidth=3;
+    g.strokeRect(70,90,600,300);g.strokeRect(700,60,300,260);g.strokeRect(860,700,120,120);
+    [[40,40],[w-40,40],[40,h-40],[w-40,h-40]].forEach(function(p){g.fillStyle='#d7b24a';g.beginPath();g.arc(p[0],p[1],26,0,7);g.fill();g.fillStyle='#09110c';g.beginPath();g.arc(p[0],p[1],15,0,7);g.fill();});
+    txt(g,'SmartRACK',80,h-150,58,'rgba(255,255,255,.85)',800);
+    txt(g,'ePDU MAIN BOARD  v2.1',80,h-95,30,'rgba(255,255,255,.7)',600);
+    txt(g,'AucaTek · Murialdo 2026',80,h-55,26,'rgba(255,255,255,.55)',500);
+    txt(g,'U1 ESP32',80,410,26,'rgba(255,255,255,.7)');txt(g,'U2 W5500',705,345,26,'rgba(255,255,255,.7)');txt(g,'U3',870,840,24,'rgba(255,255,255,.7)');
+    txt(g,'J1  RELAY',620,h-170,24,'rgba(255,255,255,.6)');txt(g,'J2  PZEM',620,h-130,24,'rgba(255,255,255,.6)');txt(g,'J3  5V',620,h-90,24,'rgba(255,255,255,.6)');
+  });
+  T.bluePcb=pcbTex(256,256,'#173f9a','#2356c4');
+  T.relayPcb=pcbTex(256,440,'#123a8c','#1d4fb8',function(g,w,h){txt(g,'1 Relay Module',w/2,h-38,22,'rgba(255,255,255,.75)',700,'center');txt(g,'VCC  GND  IN',w/2,30,18,'rgba(255,255,255,.7)',600,'center');});
+  T.purplePcb=pcbTex(128,128,'#4b2a7a','#5f3a96',function(g){txt(g,'AHT10',64,108,18,'rgba(255,255,255,.8)',700,'center');});
+  T.pzemPcb=pcbTex(600,420,'#0f4f2a','#176c39',function(g,w,h){txt(g,'PZEM-004T',30,h-60,40,'rgba(255,255,255,.85)',800);txt(g,'V3.0  ·  100A  ·  80-260V AC',30,h-22,22,'rgba(255,255,255,.65)');});
+  T.espPcb=pcbTex(512,240,'#141518','#22252b',function(g,w,h){txt(g,'ESP32 DEVKIT V1',w-20,h-24,20,'rgba(255,255,255,.7)',700,'right');for(var i=0;i<15;i++){g.fillStyle='#d7b24a';g.fillRect(40+i*30,6,14,14);g.fillRect(40+i*30,h-20,14,14);}});
+  T.shield=ctex(256,200,function(g,w,h){var gr=g.createLinearGradient(0,0,w,h);gr.addColorStop(0,'#d9dde2');gr.addColorStop(1,'#a9afb6');g.fillStyle=gr;g.fillRect(0,0,w,h);noise(g,w,h,.08,1500);
+    txt(g,'ESP32-WROOM-32',w/2,58,24,'#4d5157',800,'center');txt(g,'ESPRESSIF',w/2,92,18,'#5b6066',700,'center');txt(g,'FCC ID: 2AC7Z-ESPWROOM32',w/2,128,12,'#5b6066',600,'center');txt(g,'CE  ·  R 211-161007',w/2,150,12,'#5b6066',600,'center');
+    g.strokeStyle='#5b6066';g.lineWidth=2;g.beginPath();g.arc(w/2,180,10,Math.PI*1.15,Math.PI*1.85);g.stroke();g.beginPath();g.arc(w/2,180,18,Math.PI*1.15,Math.PI*1.85);g.stroke();});
+  T.antenna=ctex(128,128,function(g,w,h){g.fillStyle='#141518';g.fillRect(0,0,w,h);g.strokeStyle='#c7a54a';g.lineWidth=6;g.beginPath();g.moveTo(10,110);for(var i=0;i<5;i++){g.lineTo(10+i*24,20);g.lineTo(22+i*24,20);g.lineTo(22+i*24,100);g.lineTo(34+i*24,100);}g.stroke();});
+  function chipTex(a,b){return ctex(128,128,function(g,w,h){g.fillStyle='#17181b';g.fillRect(0,0,w,h);noise(g,w,h,.05,600);txt(g,a,w/2,52,26,'#9a9ea6',800,'center');txt(g,b,w/2,84,15,'#7d8189',600,'center');g.fillStyle='#55585f';g.beginPath();g.arc(16,16,6,0,7);g.fill();});}
+  T.w5500=chipTex('W5500','WIZnet');T.ams=chipTex('1117','3.3V');T.ch340=chipTex('CP2102','SiLabs');T.opto=chipTex('PC817','');T.sd=chipTex('SD3004','');
+  T.relayTop=ctex(256,256,function(g,w,h){g.fillStyle='#1f4fc0';g.fillRect(0,0,w,h);noise(g,w,h,.06,1200);txt(g,'SONGLE',w/2,44,30,'#fff',800,'center');txt(g,'SRD-05VDC-SL-C',w/2,92,22,'#fff',700,'center');txt(g,'10A 250VAC  10A 125VAC',w/2,138,16,'#e6ecff',600,'center');txt(g,'10A 30VDC   10A 28VDC',w/2,166,16,'#e6ecff',600,'center');txt(g,'CE  ⓤ  ⓒ',w/2,214,22,'#fff',700,'center');});
+  T.relaySide=ctex(256,200,function(g,w,h){g.fillStyle='#1f4fc0';g.fillRect(0,0,w,h);noise(g,w,h,.06,800);g.strokeStyle='#fff';g.lineWidth=3;g.strokeRect(40,40,70,110);g.beginPath();g.moveTo(150,60);g.lineTo(150,140);g.moveTo(150,100);g.lineTo(210,70);g.stroke();txt(g,'SRD',w/2,180,18,'#fff',700,'center');});
+  T.psuLabel=ctex(512,360,function(g,w,h){g.fillStyle='#e9eaec';g.fillRect(0,0,w,h);g.fillStyle='#23264f';g.fillRect(0,0,w,64);txt(g,'SWITCHING POWER SUPPLY',w/2,33,26,'#fff',800,'center');
+    txt(g,'MODEL: HLK-10M05',30,110,24,'#222',700);txt(g,'INPUT:  AC 100-240V  50/60Hz',30,160,22,'#333',600);txt(g,'OUTPUT: DC +5V  2A',30,205,22,'#333',600);
+    txt(g,'⚠ RIESGO ELÉCTRICO',30,265,22,'#c0392b',800);txt(g,'L    N    ⏚    V-    V+',30,320,26,'#222',800);});
+  T.mcbFront=ctex(200,300,function(g,w,h){g.fillStyle='#eceef0';g.fillRect(0,0,w,h);noise(g,w,h,.04,600);txt(g,'C10',w/2,48,44,'#1c1d22',900,'center');txt(g,'230/400V~',w/2,96,18,'#333',700,'center');txt(g,'6000',w/2,250,20,'#333',700,'center');g.strokeStyle='#333';g.lineWidth=2;g.strokeRect(w/2-36,232,72,36);txt(g,'I  ON',w/2,150,16,'#2e7d32',800,'center');txt(g,'O  OFF',w/2,200,16,'#c0392b',800,'center');});
+  T.ctLabel=ctex(256,48,function(g,w,h){g.fillStyle='#f2f2f2';g.fillRect(0,0,w,h);txt(g,'CT 100A : 100mA',w/2,h/2,22,'#111',800,'center');});
+  T.pzemTag=ctex(256,96,function(g,w,h){g.fillStyle='#f4f4f4';g.fillRect(0,0,w,h);txt(g,'PEACEFAIR',w/2,30,26,'#1c3c8a',900,'center');txt(g,'AC Communication Module',w/2,66,16,'#333',600,'center');});
 
-  var BW=8.5,BH=1.10,BD=3.8,WT=0.10,FT=0.10;
+  /* Panel frontal: serigrafía */
+  var BW=8.5,BH=1.10,BD=3.8,WT=0.08,FT=0.10;
   var FTop=FT,ceilY=FT+BH,padY=FTop+0.12,frontZ=BD/2,backZ=-BD/2;
-
-  var encl=new THREE.Group();root.add(encl);
-  add(new THREE.BoxGeometry(BW,FT,BD),M.body,0,FT/2,0,encl);
-  add(new THREE.BoxGeometry(BW,BH,WT),M.bodyDk,0,FTop+BH/2,backZ+WT/2,encl);
-  add(new THREE.BoxGeometry(WT,BH,BD-2*WT),M.body,-BW/2+WT/2,FTop+BH/2,0,encl);
-  add(new THREE.BoxGeometry(WT,BH,BD-2*WT),M.body, BW/2-WT/2,FTop+BH/2,0,encl);
-  add(new THREE.BoxGeometry(BW,BH,WT),M.bodyDk,0,FTop+BH/2,frontZ-WT/2,encl);
-  var strH=0.13;
-  add(new THREE.BoxGeometry(BW-0.08,strH,0.006),M.stripe,0,ceilY-strH/2-0.04,frontZ-WT+0.003,encl);
-  var fLed=mk(new THREE.CylinderGeometry(0.048,0.048,0.06,12),M.ledFix);
-  fLed.rotation.x=Math.PI/2;fLed.position.set(-BW/2+0.40,FTop+BH*0.54,frontZ-WT/2+0.04);encl.add(fLed);
-
-  var earW=0.68,earH=BH+0.10,earD=0.20;
-  [-1,1].forEach(function(side){
-    var eg=new THREE.Group();encl.add(eg);
-    eg.add(pos(mk(new THREE.BoxGeometry(earW,earH,earD),M.ear),side*(BW/2+earW/2),FTop+BH/2,frontZ-earD/2));
-    var hg=new THREE.CylinderGeometry(0.082,0.082,earW+0.06,14);
-    [0.22,0.55,0.84].forEach(function(yf){
-      var h=mk(hg,M.earHole);h.rotation.z=Math.PI/2;h.position.set(side*(BW/2+earW/2),FTop+BH*yf,frontZ-earD/2+0.02);eg.add(h);
-    });
-    var sg=new THREE.CylinderGeometry(0.048,0.048,0.08,10);
-    [0.28,0.78].forEach(function(yf){
-      var s=mk(sg,M.screwM);s.rotation.z=Math.PI/2;s.position.set(side*(BW/2-0.07),FTop+BH*yf,frontZ-earD*0.5);encl.add(s);
-    });
-  });
-
-  add(new THREE.BoxGeometry(0.56,0.40,0.10),M.conn,-BW/2+1.4,FTop+BH/2,backZ+0.05,encl);
-  [[-0.10,0.08],[0.10,0.08],[0,-0.10]].forEach(function(p){add(new THREE.BoxGeometry(0.06,0.14,0.09),M.outSlot,-BW/2+1.4+p[0],FTop+BH/2+p[1],backZ+0.10,encl);});
-  add(new THREE.BoxGeometry(0.34,0.26,0.10),M.rj45,BW/2-1.0,FTop+BH/2,backZ+0.05,encl);
-  var ethL=mk(new THREE.CylinderGeometry(0.028,0.028,0.05,8),M.ledFix);ethL.rotation.x=Math.PI/2;ethL.position.set(BW/2-0.88,FTop+BH/2+0.10,backZ+0.05);encl.add(ethL);
-  var rstB=mk(new THREE.CylinderGeometry(0.052,0.052,0.06,10),M.mcbBtn);rstB.rotation.x=Math.PI/2;rstB.position.set(BW/2-1.85,FTop+BH*0.70,backZ+0.03);encl.add(rstB);
-
-  var lidPivot=new THREE.Group();lidPivot.position.set(0,ceilY,backZ+WT/2);root.add(lidPivot);
-  var lidMesh=mk(new THREE.BoxGeometry(BW+0.08,0.09,BD+0.04),M.lid);lidMesh.position.set(0,0.045,BD/2-WT/2);lidPivot.add(lidMesh);
-  for(var vi=0;vi<9;vi++){var vs=mk(new THREE.BoxGeometry(BW-1.0,0.012,0.045),M.psuGrd);vs.position.set(0,0.095,BD/2-WT/2-0.38+vi*0.32);lidPivot.add(vs);}
-  var lsgG=new THREE.CylinderGeometry(0.062,0.062,0.14,12);
-  [[-BW/2+0.28,0.22],[BW/2-0.28,0.22],[-BW/2+0.28,BD-0.28],[BW/2-0.28,BD-0.28]].forEach(function(p){var ls=mk(lsgG,M.screwM);ls.rotation.x=Math.PI/2;ls.position.set(p[0],0.115,p[1]-WT/2);lidPivot.add(ls);});
-
-  var fz=frontZ-WT/2,fy=FTop+BH/2;
   var smartXs=[-3.0,-1.7,-0.4,0.9],fixedX=2.5;
-  function mkOtl(cx,isSmart,active){
-    var og=new THREE.Group();og.position.set(cx,fy,fz+0.002);encl.add(og);
-    var OW=0.78,OH=0.56,OD=0.07;
-    og.add(pos(mk(new THREE.BoxGeometry(OW,OH,OD),M.outlet),0,0,OD/2));
-    og.add(pos(mk(new THREE.CylinderGeometry(0.12,0.12,OD+0.01,16),M.outSlot),0,-0.11,OD/2+0.005));
-    og.add(pos(mk(new THREE.BoxGeometry(0.05,0.14,OD+0.01),M.outSlot),-0.14,0.11,OD/2+0.005));
-    og.add(pos(mk(new THREE.BoxGeometry(0.05,0.14,OD+0.01),M.outSlot), 0.14,0.11,OD/2+0.005));
-    og.add(pos(mk(new THREE.BoxGeometry(0.04,0.13,OD+0.01),M.outRing),-0.34,0,OD/2+0.005));
-    og.add(pos(mk(new THREE.BoxGeometry(0.04,0.13,OD+0.01),M.outRing), 0.34,0,OD/2+0.005));
-    var led=mk(new THREE.CylinderGeometry(0.036,0.036,0.04,10),isSmart?(active?M.ledOn:M.ledOff):M.ledFix);
-    led.rotation.x=Math.PI/2;led.position.set(0,OH/2-0.055,OD+0.022);og.add(led);
-    og.add(pos(mk(new THREE.BoxGeometry(0.20,0.048,0.008),M.label),0,-OH/2+0.055,OD+0.006));
-  }
-  smartXs.forEach(function(x){mkOtl(x,true,true);});mkOtl(fixedX,false,true);
-  add(new THREE.BoxGeometry(0.012,BH-0.18,0.06),M.outRing,(smartXs[3]+fixedX)/2,fy,fz+0.04,encl);
-
-  var inter=new THREE.Group();root.add(inter);
-  var pcbG=new THREE.Group();pcbG.position.set(1.2,padY,0.0);inter.add(pcbG);
-  pcbG.add(mk(new THREE.BoxGeometry(2.6,0.08,2.4),M.pcb));
-  var sfG=new THREE.CylinderGeometry(0.065,0.065,0.13,8);
-  [[-1.2,-1.1],[1.2,-1.1],[-1.2,1.1],[1.2,1.1]].forEach(function(p){pcbG.add(pos(mk(sfG,M.screwM),p[0],-0.10,p[1]));});
-  for(var vp=0;vp<7;vp++){pcbG.add(pos(mk(new THREE.CylinderGeometry(0.024,0.024,0.04,8),M.pcbPad),-1.20+vp*0.38,0.06,-1.15));pcbG.add(pos(mk(new THREE.CylinderGeometry(0.024,0.024,0.04,8),M.pcbPad),-1.20+vp*0.38,0.06,1.15));}
-  var espG=new THREE.Group();espG.position.set(-0.48,0.04,-0.48);pcbG.add(espG);
-  espG.add(mk(new THREE.BoxGeometry(1.46,0.06,0.68),M.esp32));
-  espG.add(pos(mk(new THREE.BoxGeometry(0.62,0.13,0.52),M.esp32sh),-0.26,0.10,-0.01));
-  espG.add(pos(mk(new THREE.BoxGeometry(0.17,0.04,0.17),M.chip),0.34,0.05,-0.01));
-  espG.add(pos(mk(new THREE.BoxGeometry(0.13,0.07,0.09),M.rj45),0.68,0.05,0.25));
-  espG.add(pos(mk(new THREE.BoxGeometry(1.16,0.06,0.06),M.pcbPad),0,0.06,0.30));
-  espG.add(pos(mk(new THREE.BoxGeometry(1.16,0.06,0.06),M.pcbPad),0,0.06,-0.30));
-  espG.add(pos(mk(new THREE.BoxGeometry(0.06,0.22,0.13),M.ant),-0.70,0.14,0));
-  var w5G=new THREE.Group();w5G.position.set(0.80,0.04,-0.62);pcbG.add(w5G);
-  w5G.add(mk(new THREE.BoxGeometry(0.72,0.06,0.60),M.w5500));
-  w5G.add(pos(mk(new THREE.BoxGeometry(0.28,0.12,0.26),M.w55ic),0,0.09,0));
-  var rj45w=mk(new THREE.BoxGeometry(0.28,0.22,0.21),M.rj45);rj45w.position.set(0.28,0.12,-0.18);w5G.add(rj45w);
-  w5G.add(pos(mk(new THREE.BoxGeometry(0.54,0.06,0.06),M.pcbPad),0,0.06,0.28));
-  var ahtG=new THREE.Group();ahtG.position.set(1.38,0.04,0.72);pcbG.add(ahtG);
-  ahtG.add(mk(new THREE.BoxGeometry(0.17,0.05,0.17),M.chip));ahtG.add(pos(mk(new THREE.BoxGeometry(0.11,0.08,0.11),M.pcb),0,0.07,0));
-
-  var relXs=[-3.2,-2.4,-1.6,-0.8];
-  relXs.forEach(function(rx){
-    var rG=new THREE.Group();rG.position.set(rx,padY,-1.0);inter.add(rG);
-    rG.add(mk(new THREE.BoxGeometry(0.66,0.06,1.12),M.relPcb));
-    var rb=mk(new THREE.BoxGeometry(0.48,0.38,0.50),M.relBody);rb.position.set(0,0.22,-0.16);rG.add(rb);
-    rG.add(pos(mk(new THREE.BoxGeometry(0.10,0.28,0.38),M.relCoil),-0.24,0.22,-0.16));
-    rG.add(pos(mk(new THREE.BoxGeometry(0.10,0.28,0.38),M.relCoil), 0.24,0.22,-0.16));
-    [-0.17,0,0.17].forEach(function(tx){rG.add(pos(mk(new THREE.BoxGeometry(0.10,0.10,0.08),M.relTerm),tx,0.42,-0.12));});
-    rG.add(pos(mk(new THREE.BoxGeometry(0.30,0.08,0.06),M.relTerm),0,0.08,0.50));
-    var rl=mk(new THREE.CylinderGeometry(0.036,0.036,0.05,10),M.ledOn);rl.rotation.x=Math.PI/2;rl.position.set(0,0.08,0.54);rG.add(rl);
-    rG.add(pos(mk(new THREE.BoxGeometry(0.42,0.055,0.008),M.label),0,0.04,-0.58));
+  var FPW=2048,FPH=Math.round(2048*BH/BW);
+  function fx(x){return (x+BW/2)*FPW/BW;} function fy(y){return (ceilY-y)*FPH/BH;}
+  T.front=ctex(FPW,FPH,function(g,w,h){
+    g.fillStyle='#1a1c21';g.fillRect(0,0,w,h);noise(g,w,h,.05,26000);
+    g.fillStyle='#f49825';g.fillRect(0,0,w,Math.round(h*0.16));
+    txt(g,'SmartRACK',24,h*0.08,26,'#23264f',900);txt(g,'ePDU INTELIGENTE  ·  AucaTek  ·  innovate IT',190,h*0.08,18,'#23264f',700);
+    txt(g,'1U · 230V~ 50Hz · 10A MÁX',w-24,h*0.08,18,'#23264f',800,'right');
+    ['PWR','NET','MQTT'].forEach(function(s,i){txt(g,s,fx(-3.88),fy(0.92-i*0.24),15,'#c9ccd3',700);});
+    smartXs.forEach(function(x,i){txt(g,'TOMA '+(i+1),fx(x),fy(0.2),17,'#e6e7ea',700,'center');g.fillStyle='#f49825';g.fillRect(fx(x)-22,fy(0.14),44,3);});
+    txt(g,'FIJA',fx(fixedX),fy(0.2),17,'#9aa0aa',700,'center');
+    txt(g,'⚡ 230V~',fx(3.55),fy(0.75),18,'#f49825',800,'center');txt(g,'S/N SR-A4CF12',fx(3.55),fy(0.5),14,'#8c919b',600,'center');txt(g,'HECHO EN ARG',fx(3.55),fy(0.3),14,'#8c919b',600,'center');
+  });
+  T.back=ctex(FPW,FPH,function(g,w,h){
+    g.fillStyle='#22252b';g.fillRect(0,0,w,h);noise(g,w,h,.05,20000);
+    function tx2(s,x,y,sz,c){txt(g,s,(BW/2-x)*FPW/BW,fy(y),sz,c,700,'center');}
+    tx2('AC IN  100-240V~ 50/60Hz',-BW/2+1.4,0.24,16,'#c9ccd3');tx2('FUSIBLE T10A',-BW/2+1.4,1.06,14,'#8c919b');
+    tx2('LAN',BW/2-1.0,0.32,18,'#c9ccd3');tx2('RESET',BW/2-1.85,0.5,15,'#c9ccd3');
+    tx2('⏚',-BW/2+2.3,0.4,26,'#c9ccd3');tx2('SmartRACK ePDU  ·  MAC A4:CF:12:3B:9E:01',0.2,0.6,18,'#8c919b');
   });
 
-  var pzG=new THREE.Group();pzG.position.set(-2.5,padY,0.78);inter.add(pzG);
-  pzG.add(mk(new THREE.BoxGeometry(1.22,0.10,0.86),M.pzem));
-  pzG.add(pos(mk(new THREE.BoxGeometry(1.18,0.20,0.82),M.pzemC),0,0.15,0));
-  [-0.38,-0.12,0.12,0.38].forEach(function(tx){pzG.add(pos(mk(new THREE.BoxGeometry(0.12,0.16,0.11),M.relTerm),tx,0.15,0.47));});
+  /* ── Materiales ── */
+  var M={
+    shell:std({color:0x3a3e46,map:T.brushed,metalness:0.75,roughness:0.42}),
+    shellDk:std({color:0x2a2d33,map:T.brushed,metalness:0.7,roughness:0.48}),
+    lid:std({color:0x454a53,map:T.brushed,metalness:0.78,roughness:0.38}),
+    inner:std({color:0x9aa0a8,map:T.brushed,metalness:0.6,roughness:0.5}),
+    front:std({map:T.front,metalness:0.3,roughness:0.55}),
+    back:std({map:T.back,metalness:0.3,roughness:0.6}),
+    ear:std({color:0x30343b,map:T.brushed,metalness:0.8,roughness:0.36}),
+    hole:std({color:0x050608,roughness:0.9,metalness:0}),
+    steel:std({color:0xc4c8ce,metalness:1,roughness:0.28}),
+    zinc:std({color:0xb9bec4,metalness:0.9,roughness:0.35}),
+    brass:std({color:0xc9a24a,metalness:1,roughness:0.32}),
+    gold:std({color:0xe0b84f,metalness:1,roughness:0.25}),
+    copper:std({color:0xc87a3c,metalness:1,roughness:0.3}),
+    blkPl:phys({color:0x0e0f12,roughness:0.45,metalness:0,clearcoat:0.35,clearcoatRoughness:0.4,envMapIntensity:0.35}),
+    outletPl:std({color:0x18191d,roughness:0.5,envMapIntensity:0.3}),outletFace:std({color:0x101114,roughness:0.7,envMapIntensity:0.2}),
+    blkMat:std({color:0x16171a,roughness:0.8}),
+    white:std({color:0xeceef0,roughness:0.55}),
+    bluePl:phys({color:0x1d4fd0,roughness:0.35,clearcoat:0.5,clearcoatRoughness:0.3}),
+    termBlue:phys({color:0x2260d8,roughness:0.4,clearcoat:0.3}),
+    termGreen:phys({color:0x1f8a4c,roughness:0.45,clearcoat:0.3}),
+    mainPcb:std({map:T.mainPcb,roughness:0.45,metalness:0.05}),
+    pcbEdge:std({color:0x0b4a24,roughness:0.6}),
+    bluePcb:std({map:T.bluePcb,roughness:0.45}),relayPcb:std({map:T.relayPcb,roughness:0.45}),
+    purplePcb:std({map:T.purplePcb,roughness:0.45}),pzemPcb:std({map:T.pzemPcb,roughness:0.45}),
+    espPcb:std({map:T.espPcb,roughness:0.5}),
+    shield:std({map:T.shield,metalness:0.9,roughness:0.3}),antenna:std({map:T.antenna,roughness:0.5}),
+    w5500:std({map:T.w5500,roughness:0.6}),ams:std({map:T.ams,roughness:0.6}),cp:std({map:T.ch340,roughness:0.6}),opto:std({map:T.opto,roughness:0.6}),
+    relayTop:phys({map:T.relayTop,roughness:0.35,clearcoat:0.5}),relaySide:phys({map:T.relaySide,roughness:0.35,clearcoat:0.5}),
+    psu:std({color:0xb8bcc2,metalness:0.85,roughness:0.35}),psuLabel:std({map:T.psuLabel,roughness:0.6}),
+    mcb:std({color:0xe4e6e9,roughness:0.5}),mcbFront:std({map:T.mcbFront,roughness:0.5}),mcbLever:phys({color:0x1d4fd0,roughness:0.3,clearcoat:.6}),
+    ctLabel:std({map:T.ctLabel,roughness:0.6}),pzemTag:std({map:T.pzemTag,roughness:0.6}),
+    cap:std({color:0x1b2a6b,roughness:0.4}),capTop:std({color:0xc7ccd3,metalness:0.9,roughness:0.3}),
+    resistor:std({color:0xd8c39a,roughness:0.6}),smd:std({color:0x2a2b2e,roughness:0.5}),smdCap:std({color:0xb89b6a,roughness:0.6}),
+    xtal:std({color:0xd0d4da,metalness:0.95,roughness:0.25}),
+    ledOn:std({color:0xf49825,emissive:0xf49825,emissiveIntensity:2.2,roughness:0.2}),
+    ledG:std({color:0x4ade80,emissive:0x4ade80,emissiveIntensity:1.8,roughness:0.2}),
+    ledB:std({color:0x60a5fa,emissive:0x60a5fa,emissiveIntensity:1.8,roughness:0.2}),
+    ledR:std({color:0xff3b3b,emissive:0xff3b3b,emissiveIntensity:1.8,roughness:0.2}),
+    ledOff:std({color:0x2a2c32,roughness:0.3}),
+    lens:phys({color:0xffffff,roughness:0.05,transmission:0.6,transparent:true,opacity:0.35,clearcoat:1}),
+    din:std({color:0xbfc4ca,metalness:0.95,roughness:0.3}),
+    tie:phys({color:0xf2f2f2,roughness:0.5}),tieBlk:phys({color:0x101114,roughness:0.5}),
+    gland:phys({color:0x1d4fd0,roughness:0.4,clearcoat:.4}),
+    dupont:std({color:0x101114,roughness:0.6}),
+    w:{blk:std({color:0x111113,roughness:0.5,envMapIntensity:.25}),red:std({color:0xa01212,roughness:0.45,envMapIntensity:.25}),yel:std({color:0xc79a00,roughness:0.45,envMapIntensity:.25}),
+       blu:std({color:0x0a2268,roughness:0.45,envMapIntensity:.25}),grn:std({color:0x116a28,roughness:0.45,envMapIntensity:.25}),wht:std({color:0xcfd2d6,roughness:0.5,envMapIntensity:.25}),
+       org:std({color:0xe0861a,roughness:0.45,envMapIntensity:.25}),brn:std({color:0x33180a,roughness:0.5,envMapIntensity:.25}),gy:std({color:0x2f8a2a,roughness:0.45,envMapIntensity:.25})}
+  };
 
-  var ctG=new THREE.Group();ctG.position.set(-2.0,padY+0.26,1.15);inter.add(ctG);
-  var ctM=mk(new THREE.TorusGeometry(0.26,0.09,10,22),M.ct);ctM.rotation.y=Math.PI/2;ctG.add(ctM);
-  var ctW=mk(new THREE.CylinderGeometry(0.036,0.036,0.18,8),M.wBlk);ctW.rotation.x=Math.PI/2;ctW.rotation.y=Math.PI/2;ctG.add(ctW);
+  /* ── Piezas reutilizables ── */
+  function screw(r,parent,x,y,z,axis,phillips){
+    var g=new THREE.Group();
+    var head=mk(cyl(r,r*0.92,r*0.6,20),M.steel);g.add(head);
+    if(phillips!==false){var s1=mk(box(r*1.3,r*0.18,r*0.22),M.hole,false);s1.position.y=r*0.3;g.add(s1);var s2=s1.clone();s2.rotation.y=Math.PI/2;g.add(s2);}
+    if(axis==='z'){g.rotation.x=Math.PI/2;}else if(axis==='-z'){g.rotation.x=-Math.PI/2;}else if(axis==='x'){g.rotation.z=-Math.PI/2;}else if(axis==='-x'){g.rotation.z=Math.PI/2;}
+    g.position.set(x,y,z);parent.add(g);return g;
+  }
+  function standoff(parent,x,y,z,h){var s=mk(cyl(0.05,0.05,h,6),M.brass);at(s,x,y,z,parent);return s;}
+  function pins(parent,n,rows,pitch,x,y,z,len,along){ /* along: 'x' or 'z' */
+    var base=mk(box(along==='x'?n*pitch:rows*pitch,0.07,along==='x'?rows*pitch:n*pitch),M.blkPl);at(base,x,y+0.035,z,parent);
+    var im=new THREE.InstancedMesh(box(0.018,len,0.018),M.gold,n*rows);var d=new THREE.Object3D(),k=0;
+    for(var i=0;i<n;i++)for(var j=0;j<rows;j++){var a=(i-(n-1)/2)*pitch,b=(j-(rows-1)/2)*pitch;d.position.set(x+(along==='x'?a:b),y+len/2,z+(along==='x'?b:a));d.updateMatrix();im.setMatrixAt(k++,d.matrix);}
+    im.castShadow=true;parent.add(im);return base;
+  }
+  function terminal(parent,n,x,y,z,mat,rotY){ /* bornera de tornillo, entradas hacia +z */
+    var g=new THREE.Group();g.position.set(x,y,z);g.rotation.y=rotY||0;parent.add(g);
+    var p=0.14,w=n*p;
+    g.add(at(mk(rbox(w,0.16,0.18,0.015),mat||M.termBlue),0,0.08,0));
+    g.add(at(mk(box(w-0.01,0.05,0.04),mat||M.termBlue),0,0.165,-0.04));
+    for(var i=0;i<n;i++){var cx=(i-(n-1)/2)*p;
+      screw(0.04,g,cx,0.175,0.01,null,false);var sl=mk(box(0.07,0.012,0.014),M.hole,false);at(sl,cx,0.2,0.01,g);sl.rotation.y=0.6;
+      at(mk(box(0.08,0.07,0.02),M.hole,false),cx,0.07,0.085,g);}
+    return g;
+  }
+  function led(parent,x,y,z,mat,r,axis){var l=mk(cyl(r||0.03,r||0.03,0.03,14),mat);if(axis==='z')l.rotation.x=Math.PI/2;at(l,x,y,z,parent);return l;}
+  function smd(parent,x,z,y,w,d,m){at(mk(box(w,0.025,d),m||M.smd),x,y+0.0125,z,parent);}
+  function ecap(parent,x,y,z,r,h){at(mk(cyl(r,r,h,20),M.cap),x,y+h/2,z,parent);at(mk(cyl(r*0.96,r*0.96,0.006,20),M.capTop),x,y+h+0.003,z,parent);}
+  function tube(pts,r,m){
+    var c=new THREE.CatmullRomCurve3(pts.map(function(p){return new THREE.Vector3(p[0],p[1],p[2]);}),false,'centripetal');
+    root.add(mk(new THREE.TubeGeometry(c,48,r,10,false),m));
+    [0,1].forEach(function(t){var e=mk(cyl(r*1.15,r*1.15,0.05,10),M.copper);var p=c.getPointAt(t),tg=c.getTangentAt(t);e.position.copy(p);e.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),tg);root.add(e);});
+    return c;
+  }
+  function tie(c,t,r,m){var p=c.getPointAt(t),tg=c.getTangentAt(t);var z=mk(new THREE.TorusGeometry(r,0.012,6,20),m||M.tie);z.position.copy(p);z.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),tg);root.add(z);
+    var hd=mk(box(0.035,0.03,0.04),m||M.tie);hd.position.copy(p).add(new THREE.Vector3(0,r,0));root.add(hd);}
 
-  var mcbG=new THREE.Group();mcbG.position.set(-3.85,padY,-1.35);inter.add(mcbG);
-  mcbG.add(mk(new THREE.BoxGeometry(0.46,0.64,0.42),M.mcb));
-  mcbG.add(pos(mk(new THREE.BoxGeometry(0.14,0.24,0.06),M.mcbBtn),0,0.37,0.24));
-  mcbG.add(pos(mk(new THREE.BoxGeometry(0.32,0.10,0.08),M.relTerm),0,0.62,0.18));
-  mcbG.add(pos(mk(new THREE.BoxGeometry(0.32,0.10,0.08),M.relTerm),0,0.05,0.18));
+  /* ═══ GABINETE ═══ */
+  var encl=new THREE.Group();root.add(encl);
+  at(mk(rbox(BW,FT,BD,0.02),M.shell),0,FT/2,0,encl);
+  at(mk(box(BW-2*WT,0.005,BD-2*WT),M.inner,false),0,FT+0.003,0,encl);
+  at(mk(rbox(BW,BH,WT,0.02),M.shellDk),0,FTop+BH/2,backZ+WT/2,encl);
+  [-1,1].forEach(function(s){at(mk(rbox(WT,BH,BD-2*WT,0.02),M.shell),s*(BW/2-WT/2),FTop+BH/2,0,encl);});
+  at(mk(rbox(BW,BH,WT,0.02),M.shellDk),0,FTop+BH/2,frontZ-WT/2,encl);
+  /* serigrafía frontal y trasera */
+  var fp=mk(new THREE.PlaneGeometry(BW-0.02,BH-0.02),M.front,false);at(fp,0,FTop+BH/2,frontZ+0.001,encl);
+  var bp=mk(new THREE.PlaneGeometry(BW-0.02,BH-0.02),M.back,false);bp.rotation.y=Math.PI;at(bp,0,FTop+BH/2,backZ-0.001,encl);
+  /* rejillas laterales */
+  (function(){var n=10,im=new THREE.InstancedMesh(rbox(0.012,0.5,0.1,0.005,1),M.hole,n*2*2),d=new THREE.Object3D(),k=0;
+    [-1,1].forEach(function(s){for(var r=0;r<2;r++)for(var i=0;i<n;i++){d.position.set(s*(BW/2+0.001),FTop+BH*0.5,-1.3+i*0.16+r*1.6);d.updateMatrix();im.setMatrixAt(k++,d.matrix);}});
+    encl.add(im);})();
+  /* patas de goma */
+  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(p){at(mk(cyl(0.12,0.14,0.05,20),M.blkMat),p[0]*(BW/2-0.4),-0.02,p[1]*(BD/2-0.4),encl);});
 
-  var psuG=new THREE.Group();psuG.position.set(3.35,padY,0.0);inter.add(psuG);
-  psuG.add(pos(mk(new THREE.BoxGeometry(1.46,0.54,2.00),M.psu),0,0.27,0));
-  psuG.add(pos(mk(new THREE.BoxGeometry(1.46,0.04,2.00),M.psu),0,0.56,0));
-  for(var pv=0;pv<5;pv++){psuG.add(pos(mk(new THREE.BoxGeometry(1.28,0.03,0.06),M.psuGrd),0,0.58,-0.80+pv*0.35));}
-  [-0.48,-0.16,0.16,0.48].forEach(function(tx){psuG.add(pos(mk(new THREE.BoxGeometry(0.12,0.15,0.10),M.relTerm),tx,0.50,-1.06));});
-  psuG.add(pos(mk(new THREE.BoxGeometry(0.42,0.28,0.09),M.conn),0,0.27,1.06));
+  /* orejas de rack (chapa plegada con ranuras) */
+  [-1,1].forEach(function(s){
+    var eh=BH+0.1,ew=0.68;
+    var sh=rrShape(ew,eh,0.06);sh.holes.push(slotPath(0,-eh*0.3,0.34,0.13));sh.holes.push(slotPath(0,eh*0.3,0.34,0.13));
+    var g=new THREE.ExtrudeGeometry(sh,{depth:0.07,bevelEnabled:true,bevelThickness:0.01,bevelSize:0.01,bevelSegments:2,curveSegments:16});
+    var ear=mk(g,M.ear);at(ear,s*(BW/2+ew/2+0.01),FTop+BH/2,frontZ-0.07,encl);
+    var fl=mk(rbox(0.04,eh-0.1,0.6,0.01),M.ear);at(fl,s*(BW/2+0.02),FTop+BH/2,frontZ-0.37,encl);
+    screw(0.045,encl,s*(BW/2+0.045),FTop+BH*0.3,frontZ-0.25,s>0?'x':'-x');screw(0.045,encl,s*(BW/2+0.045),FTop+BH*0.7,frontZ-0.48,s>0?'x':'-x');
+    /* tornillo de rack con arandela */
+    var rs=new THREE.Group();rs.position.set(s*(BW/2+ew/2+0.01),FTop+BH/2-eh*0.3,frontZ+0.02);encl.add(rs);
+    var wsh=mk(cyl(0.11,0.11,0.015,24),M.zinc);wsh.rotation.x=Math.PI/2;rs.add(wsh);
+    screw(0.085,rs,0,0,0.035,'z');
+    /* manija */
+    var hp=new THREE.CatmullRomCurve3([new THREE.Vector3(0,-0.32,0),new THREE.Vector3(0,-0.3,0.18),new THREE.Vector3(0,0.3,0.18),new THREE.Vector3(0,0.32,0)]);
+    var hd=mk(new THREE.TubeGeometry(hp,30,0.035,12,false),M.steel);at(hd,s*(BW/2+ew*0.68),FTop+BH/2,frontZ+0.005,encl);
+  });
 
-  var iecY=FTop+BH/2,iecX=-BW/2+1.4;
-  tube([[iecX,iecY,backZ+0.12],[iecX,padY+0.56,-1.10],[-3.85,padY+0.56,-1.35]],0.042,M.wBlk);
-  tube([[iecX,iecY,backZ+0.12],[iecX-0.12,padY+0.52,-1.18],[-3.85,padY+0.52,-1.45]],0.040,M.wWht);
-  tube([[iecX+0.16,iecY,backZ+0.12],[-2.5,padY+0.22,-1.32]],0.034,M.wGrn);
-  tube([[-3.85,padY+0.58,-1.12],[-3.85,padY+0.65,-0.40],[-2.5,padY+0.48,0.40]],0.042,M.wRed);
-  tube([[-3.85,padY+0.50,-1.10],[0,padY+0.64,-0.80],[3.35,padY+0.50,1.00]],0.036,M.wBlk);
-  tube([[3.35,padY+0.47,-0.94],[2.0,padY+0.54,-0.48],[1.2,padY+0.28,-0.40]],0.028,M.wRed);
-  tube([[3.35,padY+0.43,-0.94],[1.8,padY+0.50,-0.40],[0.3,padY+0.22,-0.20]],0.028,M.wBlk);
-  tube([[2.0+0.28,padY+0.20,-0.62-0.16],[3.0,padY+0.44,-1.20],[BW/2-1.0,padY+0.26,backZ+0.18]],0.038,M.wBlu);
-  tube([[-2.5,padY+0.16,0.40],[-1.5,padY+0.30,0.26],[1.2-0.48+0.08,padY+0.18,0.20]],0.022,M.wYel);
-  tube([[-2.5,padY+0.13,0.40],[-1.3,padY+0.27,0.27],[1.2-0.48+0.05,padY+0.15,0.18]],0.022,M.wGrn);
-  var cc=[M.wBlu,M.wYel,M.wOrg,M.wGrn];
-  relXs.forEach(function(rx,ri){tube([[1.2-0.48+ri*0.07,padY+0.16,-0.12],[-0.2+ri*0.04,padY+0.30,-0.50],[rx,padY+0.16,-0.54],[rx,padY+0.12,0.48]],0.020,cc[ri]);});
+  /* LEDs de estado frontales */
+  var stLeds=[M.ledG,M.ledB,M.ledOn];
+  stLeds.forEach(function(m,i){var y=0.92-i*0.24;at(mk(cyl(0.045,0.045,0.02,20),M.blkPl),-4.03,y,frontZ+0.01,encl).rotation.x=Math.PI/2;led(encl,-4.03,y,frontZ+0.022,m,0.03,'z');});
+
+  /* ── Tomas tipo I (Argentina) ── */
+  var fz=frontZ, fyc=FTop+BH*0.5+0.02;
+  var outletLeds=[], relayLeds=[];
+  function outlet(cx,smart){
+    var og=new THREE.Group();og.position.set(cx,fyc,fz);encl.add(og);
+    var W=0.82,H=0.64;
+    var fr=rrShape(W,H,0.08);fr.holes.push(rrShape(W-0.12,H-0.12,0.06));
+    og.add(mk(new THREE.ExtrudeGeometry(fr,{depth:0.05,bevelEnabled:true,bevelThickness:0.015,bevelSize:0.012,bevelSegments:3,curveSegments:12}),M.outletPl));
+    var face=mk(new THREE.ExtrudeGeometry(rrShape(W-0.1,H-0.1,0.06),{depth:0.02,bevelEnabled:false}),M.outletFace);face.position.z=0.0;og.add(face);
+    var FZ=0.021, sl=box(0.04,0.15,0.004);
+    var a=at(mk(sl,M.hole,false),-0.1,0.02,FZ,og);a.rotation.z=-Math.PI/6;
+    var b=at(mk(sl,M.hole,false),0.1,0.02,FZ,og);b.rotation.z=Math.PI/6;
+    at(mk(box(0.04,0.13,0.004),M.hole,false),0,-0.15,FZ,og);
+    screw(0.022,og,0,0.07,FZ+0.006,'z');
+    var l=led(og,0.25,0.21,FZ+0.012,smart?M.ledOn:M.ledG,0.022,'z');
+    var lensM=mk(new THREE.SphereGeometry(0.026,16,8,0,Math.PI*2,0,Math.PI/2),M.lens,false);lensM.rotation.x=Math.PI/2;at(lensM,0.25,0.21,FZ+0.026,og);
+    return l;
+  }
+  smartXs.forEach(function(x){outletLeds.push(outlet(x,true));});outlet(fixedX,false);
+  at(mk(box(0.01,BH-0.3,0.012),M.steel),(smartXs[3]+fixedX)/2,fyc,fz+0.006,encl);
+
+  /* ── Panel trasero ── */
+  var bz=backZ, iecX=-BW/2+1.4, iecY=FTop+BH/2;
+  (function(){
+    var g=new THREE.Group();g.position.set(iecX,iecY+0.05,bz);encl.add(g);
+    var hs=new THREE.ExtrudeGeometry(rrShape(0.62,0.5,0.05),{depth:0.06,bevelEnabled:true,bevelThickness:0.01,bevelSize:0.01,bevelSegments:2});
+    var h=mk(hs,M.blkPl);h.rotation.y=Math.PI;g.add(h);
+    var tr=new THREE.Shape();tr.moveTo(-0.2,-0.14);tr.lineTo(0.2,-0.14);tr.lineTo(0.2,0.08);tr.lineTo(0.12,0.16);tr.lineTo(-0.12,0.16);tr.lineTo(-0.2,0.08);tr.lineTo(-0.2,-0.14);
+    var rec=mk(new THREE.ExtrudeGeometry(tr,{depth:0.02,bevelEnabled:false}),M.hole,false);rec.rotation.y=Math.PI;rec.position.z=-0.055;g.add(rec);
+    [[-0.1,0],[0.1,0],[0,0.08]].forEach(function(p){var pn=mk(box(0.035,0.07,0.08),M.steel);at(pn,p[0],p[1],-0.06,g);});
+    var fu=mk(rbox(0.3,0.1,0.05,0.01),M.blkPl);at(fu,0,-0.3,-0.02,g);at(mk(box(0.12,0.02,0.02),M.hole,false),0,-0.3,-0.05,g);
+    screw(0.035,g,-0.38,0.1,-0.02,'-z');screw(0.035,g,0.38,0.1,-0.02,'-z');
+  })();
+  /* tuerca de tierra */
+  (function(){var s=mk(cyl(0.06,0.06,0.05,6),M.zinc);s.rotation.x=Math.PI/2;at(s,-BW/2+2.3,0.6,bz-0.03,encl);at(mk(cyl(0.02,0.02,0.12,10),M.zinc),-BW/2+2.3,0.6,bz-0.05,encl).rotation.x=Math.PI/2;})();
+  /* RJ45 */
+  (function(){var g=new THREE.Group();g.position.set(BW/2-1.0,FTop+BH/2,bz);encl.add(g);
+    at(mk(rbox(0.4,0.34,0.06,0.01),M.steel),0,0,-0.02,g);at(mk(box(0.26,0.2,0.05),M.hole,false),0,-0.01,-0.04,g);
+    at(mk(box(0.09,0.05,0.04),M.hole,false),0,0.105,-0.04,g);
+    led(g,-0.13,0.13,-0.052,M.ledG,0.022,'z');led(g,0.13,0.13,-0.052,M.ledOn,0.022,'z');
+    var cab=new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,-0.06),new THREE.Vector3(0,-0.05,-0.6),new THREE.Vector3(0.3,-0.55,-1.4)]);
+    g.add(mk(new THREE.TubeGeometry(cab,30,0.06,12,false),phys({color:0x2b6bd8,roughness:.5,clearcoat:.2})));
+    at(mk(rbox(0.22,0.17,0.24,0.03),phys({color:0xdfe7f5,roughness:.15,transmission:.3,transparent:true,opacity:.75})),0,-0.01,-0.15,g);
+  })();
+  /* botón reset */
+  (function(){var g=new THREE.Group();g.position.set(BW/2-1.85,FTop+BH*0.62,bz);encl.add(g);
+    var r1=mk(cyl(0.075,0.075,0.03,24),M.steel);r1.rotation.x=Math.PI/2;at(r1,0,0,-0.015,g);var r2=mk(cyl(0.05,0.05,0.04,24),M.ledR);r2.rotation.x=Math.PI/2;at(r2,0,0,-0.025,g);})();
+  /* prensacable de salida */
+  (function(){var g=new THREE.Group();g.position.set(-BW/2+2.9,FTop+BH/2,bz);encl.add(g);
+    var n=mk(cyl(0.12,0.12,0.08,6),M.gland);n.rotation.x=Math.PI/2;at(n,0,0,-0.04,g);var d=mk(cyl(0.09,0.1,0.12,20),M.gland);d.rotation.x=Math.PI/2;at(d,0,0,-0.13,g);})();
+
+  /* ═══ TAPA ═══ */
+  var lidPivot=new THREE.Group();lidPivot.position.set(0,ceilY,backZ+WT/2);root.add(lidPivot);
+  var lidMesh=mk(rbox(BW+0.06,0.06,BD+0.04,0.025),M.lid);lidMesh.position.set(0,0.03,BD/2-WT/2);lidPivot.add(lidMesh);
+  (function(){var im=new THREE.InstancedMesh(rbox(1.0,0.008,0.05,0.02,1),M.hole,24),d=new THREE.Object3D(),k=0;
+    for(var c=0;c<2;c++)for(var i=0;i<12;i++){d.position.set(2.3+c*1.1,0.061,BD/2-WT/2-1.2+i*0.2);d.updateMatrix();im.setMatrixAt(k++,d.matrix);}lidPivot.add(im);})();
+  [[-BW/2+0.22,0.18],[BW/2-0.22,0.18],[-BW/2+0.22,BD-0.24],[BW/2-0.22,BD-0.24],[0,0.18],[0,BD-0.24]].forEach(function(p){screw(0.05,lidPivot,p[0],0.075,p[1]-WT/2);});
+  /* logo grabado en la tapa */
+  (function(){var t=ctex(512,96,function(g,w,h){g.clearRect(0,0,w,h);txt(g,'Smart',8,h/2,60,'rgba(210,214,220,.65)',900);txt(g,'RACK',190,h/2,60,'rgba(244,152,37,.9)',900);});
+    var m=std({map:t,transparent:true,roughness:.5,metalness:.4});var p=mk(new THREE.PlaneGeometry(2.0,0.375),m,false);p.rotation.x=-Math.PI/2;at(p,-2.6,0.062,BD/2-WT/2+0.9,lidPivot);})();
+  /* bisagras */
+  [-2.5,2.5].forEach(function(x){var h=mk(cyl(0.045,0.045,0.6,16),M.steel);h.rotation.z=Math.PI/2;at(h,x,0.0,-0.02,lidPivot);});
+
+  /* ═══ INTERIOR ═══ */
+  var inter=new THREE.Group();root.add(inter);
+
+  /* Placa principal */
+  var pcbTop=padY+0.04;
+  var pcbG=new THREE.Group();pcbG.position.set(1.2,pcbTop,0.0);inter.add(pcbG);
+  var pcbMats=[M.pcbEdge,M.pcbEdge,M.mainPcb,M.pcbEdge,M.pcbEdge,M.pcbEdge];
+  at(mk(box(2.6,0.06,2.4),pcbMats),0,-0.03,0,pcbG);
+  [[-1.2,-1.1],[1.2,-1.1],[-1.2,1.1],[1.2,1.1]].forEach(function(p){standoff(pcbG,p[0],-0.06-(pcbTop-0.06-FT)/2,p[1],pcbTop-0.06-FT);screw(0.045,pcbG,p[0],0.012,p[1]);});
+
+  /* ESP32 DevKit sobre zócalos hembra */
+  var espG=new THREE.Group();espG.position.set(-0.48,0,-0.48);pcbG.add(espG);
+  [-0.27,0.27].forEach(function(z){at(mk(box(1.4,0.09,0.09),M.blkPl),0,0.045,z,espG);});
+  var espB=new THREE.Group();espB.position.y=0.1;espG.add(espB);
+  at(mk(box(1.46,0.035,0.62),[M.pcbEdge,M.pcbEdge,M.espPcb,M.pcbEdge,M.pcbEdge,M.pcbEdge]),0,0.0175,0,espB);
+  at(mk(box(0.66,0.02,0.5),M.antenna),-0.38,0.045,0,espB);
+  at(mk(box(0.5,0.08,0.46),[M.steel,M.steel,M.shield,M.steel,M.steel,M.steel]),0.0,0.075,0,espB);
+  at(mk(box(0.12,0.07,0.17),M.steel),0.69,0.07,0,espB); /* micro USB */
+  at(mk(box(0.05,0.04,0.12),M.hole,false),0.735,0.07,0,espB);
+  [-0.17,0.17].forEach(function(z){at(mk(box(0.1,0.04,0.08),M.steel),0.52,0.055,z,espB);at(mk(cyl(0.025,0.025,0.03,12),M.blkMat),0.52,0.09,z,espB);});
+  at(mk(box(0.13,0.04,0.1),M.ams),0.36,0.055,0.2,espB);at(mk(box(0.14,0.03,0.14),M.cp),0.36,0.05,-0.12,espB);
+  led(espB,0.6,0.05,0.05,M.ledR,0.015);
+  for(var ec=0;ec<6;ec++) smd(espB,0.28+ec*0.05,0.25,0.035,0.03,0.015,M.smdCap);
+  /* pines bajo el ESP (visibles a los costados) */
+  (function(){var im=new THREE.InstancedMesh(box(0.016,0.06,0.016),M.gold,30),d=new THREE.Object3D(),k=0;
+    [-0.27,0.27].forEach(function(z){for(var i=0;i<15;i++){d.position.set(-0.63+i*0.09,0.08,z);d.updateMatrix();im.setMatrixAt(k++,d.matrix);}});espG.add(im);})();
+
+  /* Módulo W5500 */
+  var w5G=new THREE.Group();w5G.position.set(0.8,0,-0.62);pcbG.add(w5G);
+  pins(w5G,5,2,0.09,-0.2,0,0.15,0.14,'x');
+  var w5B=new THREE.Group();w5B.position.y=0.14;w5G.add(w5B);
+  at(mk(box(0.72,0.03,0.6),[M.pcbEdge,M.pcbEdge,M.bluePcb,M.pcbEdge,M.pcbEdge,M.pcbEdge]),0,0.015,0,w5B);
+  at(mk(box(0.22,0.04,0.22),M.w5500),-0.08,0.05,0.02,w5B);
+  at(mk(rbox(0.14,0.04,0.06,0.02),M.xtal),-0.08,0.05,-0.18,w5B);
+  var rj=mk(box(0.3,0.24,0.3),M.steel);at(rj,0.22,0.15,-0.1,w5B);at(mk(box(0.22,0.14,0.02),M.hole,false),0.22,0.13,-0.255,w5B);
+  led(w5B,0.13,0.22,-0.26,M.ledG,0.015,'z');led(w5B,0.31,0.22,-0.26,M.ledOn,0.015,'z');
+  for(var wc=0;wc<5;wc++) smd(w5B,-0.3+wc*0.06,0.2,0.03,0.035,0.018,M.smdCap);
+
+  /* Sensor AHT10 */
+  var ahtG=new THREE.Group();ahtG.position.set(1.38,0,0.72);pcbG.add(ahtG);
+  pins(ahtG,4,1,0.07,0,0,0.1,0.12,'x');
+  var aB=new THREE.Group();aB.position.y=0.12;ahtG.add(aB);
+  at(mk(box(0.34,0.025,0.3),[M.pcbEdge,M.pcbEdge,M.purplePcb,M.pcbEdge,M.pcbEdge,M.pcbEdge]),0,0.0125,0,aB);
+  at(mk(box(0.1,0.04,0.1),M.white),0,0.045,-0.03,aB);at(mk(cyl(0.012,0.012,0.005,10),M.blkMat),0,0.068,-0.03,aB);
+  smd(aB,-0.11,-0.08,0.025,0.03,0.015);smd(aB,0.11,-0.08,0.025,0.03,0.015);
+
+  /* Componentes de la placa principal */
+  terminal(pcbG,2,-1.05,0,1.05,M.termBlue,Math.PI);  /* entrada 5V */
+  terminal(pcbG,3,-1.0,0,0.45,M.termGreen,-Math.PI/2); /* PZEM TTL */
+  ecap(pcbG,-0.7,0,0.95,0.09,0.22);ecap(pcbG,-0.45,0,0.98,0.07,0.16);
+  pins(pcbG,8,1,0.09,-0.48,0,-1.08,0.14,'x'); /* salida a relés */
+  for(var rr=0;rr<6;rr++){var rs=mk(cyl(0.022,0.022,0.12,10),M.resistor);rs.rotation.x=Math.PI/2;at(rs,0.2+rr*0.12,0.03,0.4,pcbG);[-0.03,0,0.03].forEach(function(dz,bi){var bd=mk(cyl(0.024,0.024,0.012,10),[M.w.brn,M.blkMat,M.w.red][bi]);bd.rotation.x=Math.PI/2;at(bd,0.2+rr*0.12,0.03,0.4+dz,pcbG);});}
+  for(var sm=0;sm<10;sm++) smd(pcbG,0.15+sm*0.09,0.62,0,0.05,0.025);
+  at(mk(box(0.18,0.05,0.12),M.opto),0.5,0.025,0.82,pcbG);at(mk(box(0.18,0.05,0.12),M.opto),0.75,0.025,0.82,pcbG);
+  var ldMain=led(pcbG,-1.1,0.02,-0.2,M.ledG,0.022);
+
+  /* ── Módulos de relé (x4) ── */
+  var relXs=[-3.2,-2.4,-1.6,-0.8];
+  relXs.forEach(function(rx,ri){
+    var rG=new THREE.Group();rG.position.set(rx,pcbTop,-1.0);inter.add(rG);
+    at(mk(box(0.66,0.035,1.12),[M.pcbEdge,M.pcbEdge,M.relayPcb,M.pcbEdge,M.pcbEdge,M.pcbEdge]),0,-0.0175,0,rG);
+    [[-0.27,-0.5],[0.27,-0.5],[-0.27,0.5],[0.27,0.5]].forEach(function(p){standoff(rG,p[0],-0.035-(pcbTop-0.035-FT)/2,p[1],pcbTop-0.035-FT);screw(0.03,rG,p[0],0.008,p[1]);});
+    var body=mk(rbox(0.46,0.38,0.5,0.015),[M.relaySide,M.relaySide,M.relayTop,M.bluePl,M.relaySide,M.relaySide]);at(body,0,0.19,-0.08,rG);
+    terminal(rG,3,0,0,0.38,M.termBlue,0);
+    pins(rG,3,1,0.09,0,0,-0.47,0.13,'x');
+    var dp=mk(box(0.29,0.1,0.1),M.dupont);at(dp,0,0.13,-0.47,rG);
+    var rl=led(rG,-0.2,0.02,0.16,M.ledOn,0.02);relayLeds.push(rl);
+    led(rG,0.2,0.02,0.16,M.ledR,0.02);
+    smd(rG,-0.05,0.18,0,0.07,0.04);smd(rG,0.08,0.18,0,0.05,0.03,M.smdCap);
+    var di=mk(cyl(0.02,0.02,0.1,10),M.blkMat);di.rotation.z=Math.PI/2;at(di,0,0.02,0.23,rG);
+  });
+
+  /* ── PZEM-004T ── */
+  var pzG=new THREE.Group();pzG.position.set(-2.5,pcbTop,0.78);inter.add(pzG);
+  at(mk(box(1.22,0.035,0.86),[M.pcbEdge,M.pcbEdge,M.pzemPcb,M.pcbEdge,M.pcbEdge,M.pcbEdge]),0,-0.0175,0,pzG);
+  [[-0.55,-0.37],[0.55,-0.37],[-0.55,0.37],[0.55,0.37]].forEach(function(p){standoff(pzG,p[0],-0.035-(pcbTop-0.035-FT)/2,p[1],pcbTop-0.035-FT);screw(0.035,pzG,p[0],0.008,p[1]);});
+  var tb=terminal(pzG,4,-0.18,0,0.28,M.termGreen,0);
+  at(mk(box(0.36,0.1,0.12),M.white),0.38,0.05,-0.3,pzG);for(var jp=0;jp<4;jp++) at(mk(box(0.02,0.06,0.02),M.gold),0.26+jp*0.08,0.12,-0.3,pzG);
+  at(mk(box(0.18,0.05,0.12),M.opto),0.1,0.025,-0.15,pzG);at(mk(box(0.18,0.05,0.12),M.opto),0.35,0.025,-0.05,pzG);
+  at(mk(box(0.2,0.04,0.2),M.cp),-0.25,0.02,-0.12,pzG);
+  ecap(pzG,-0.45,0,-0.25,0.06,0.14);
+  var tag=mk(new THREE.PlaneGeometry(0.42,0.16),M.pzemTag,false);tag.rotation.x=-Math.PI/2;at(tag,0.32,0.002,0.12,pzG);
+
+  /* Transformador de corriente */
+  var ctG=new THREE.Group();ctG.position.set(-2.0,pcbTop+0.26,1.25);inter.add(ctG);
+  var ctM=mk(new THREE.TorusGeometry(0.24,0.09,16,40),M.blkPl);ctM.rotation.y=Math.PI/2;ctG.add(ctM);
+  var lbl=mk(new THREE.CylinderGeometry(0.335,0.335,0.12,40,1,true,0,Math.PI*0.6),M.ctLabel);lbl.rotation.z=Math.PI/2;lbl.rotation.y=Math.PI/2;ctG.add(lbl);
+
+  /* ── Riel DIN + térmica ── */
+  var dinZ=-1.45;
+  at(mk(box(0.9,0.03,0.35),M.din),-3.85,FT+0.015,dinZ,inter);
+  [-0.15,0.15].forEach(function(dz){at(mk(box(0.9,0.06,0.02),M.din),-3.85,FT+0.045,dinZ+dz,inter);});
+  screw(0.035,inter,-4.15,FT+0.035,dinZ);screw(0.035,inter,-3.55,FT+0.035,dinZ);
+  var mcbG=new THREE.Group();mcbG.position.set(-3.85,FT+0.06,dinZ+0.05);inter.add(mcbG);
+  at(mk(rbox(0.36,0.72,0.46,0.03),M.mcb),0,0.36,0,mcbG);
+  var mf=mk(new THREE.PlaneGeometry(0.3,0.45),M.mcbFront,false);at(mf,0,0.4,0.232,mcbG);
+  var lev=mk(rbox(0.12,0.18,0.1,0.02),M.mcbLever);at(lev,0,0.5,0.25,mcbG);lev.rotation.x=-0.35;
+  [[0.68],[0.08]].forEach(function(y){screw(0.04,mcbG,0,y[0]+0.02,-0.05);at(mk(box(0.12,0.06,0.08),M.hole,false),0,y[0],0.12,mcbG);});
+
+  /* ── Fuente 5V ── */
+  var psuG=new THREE.Group();psuG.position.set(3.35,FT,0.0);inter.add(psuG);
+  at(mk(rbox(1.46,0.56,2.0,0.03),M.psu),0,0.28,0,psuG);
+  (function(){var im=new THREE.InstancedMesh(cyl(0.025,0.025,0.01,10),M.hole,90),d=new THREE.Object3D(),k=0;
+    for(var i=0;i<9;i++)for(var j=0;j<10;j++){d.position.set(-0.55+i*0.137,0.562,-0.85+j*0.1);d.updateMatrix();im.setMatrixAt(k++,d.matrix);}psuG.add(im);})();
+  var pl=mk(new THREE.PlaneGeometry(1.2,0.84),M.psuLabel,false);pl.rotation.x=-Math.PI/2;at(pl,0,0.563,0.5,psuG);
+  var ptb=new THREE.Group();ptb.position.set(0,0,-1.0);psuG.add(ptb);
+  at(mk(box(1.3,0.3,0.16),M.blkPl),0,0.15,-0.08,ptb);
+  for(var pt=0;pt<5;pt++){var x=-0.52+pt*0.26;at(mk(box(0.04,0.3,0.18),M.blkPl),x+0.13,0.16,-0.08,ptb);screw(0.05,ptb,x,0.32,-0.08);}
+  led(psuG,0.6,0.565,-0.85,M.ledG,0.02);
+  var pot=mk(cyl(0.035,0.035,0.03,16),M.white);at(pot,0.45,0.575,-0.85,psuG);
+  [[-0.65,-0.9],[0.65,-0.9],[-0.65,0.9],[0.65,0.9]].forEach(function(p){screw(0.04,psuG,p[0],0.565,p[1]);});
+
+  /* ═══ CABLEADO ═══ */
+  var W=M.w, py=padY;
+  var iecIn=[iecX,iecY+0.05,backZ+0.12];
+  var c1=tube([iecIn,[iecX,py+0.56,-1.15],[-3.85,py+0.62,-1.45]],0.04,W.brn);
+  var c2=tube([[iecX-0.08,iecY+0.05,backZ+0.12],[iecX-0.15,py+0.5,-1.2],[-3.9,py+0.62,-1.55]],0.038,W.blu);
+  tube([[iecX+0.12,iecY+0.12,backZ+0.12],[iecX+0.6,py+0.15,-1.5],[-2.5,py+0.12,-1.6],[-0.9,FT+0.06,-1.7]],0.034,W.gy);
+  tie(c1,0.5,0.08);
+  tube([[-3.85,FT+0.12,dinZ+0.2],[-3.9,py+0.3,-0.5],[-2.75,py+0.22,1.05]],0.04,W.brn);  /* salida térmica → PZEM */
+  tube([[-2.6,py+0.24,1.05],[-2.3,py+0.3,1.25],[-2.0,py+0.26,1.25],[-1.5,py+0.6,1.0],[0.0,py+0.7,-0.2],[3.1,py+0.56,-1.15]],0.036,W.brn); /* fase a fuente */
+  tube([[-3.85,FT+0.7,dinZ+0.1],[0,py+0.75,-0.95],[3.35,py+0.56,-1.15]],0.034,W.blu); /* neutro a fuente */
+  /* 5V fuente → placa */
+  tube([[3.4,py+0.32,-1.18],[2.8,py+0.4,-1.3],[0.4,py+0.35,1.5],[0.15,pcbTop+0.1,1.2]],0.026,W.red);
+  tube([[3.14,py+0.32,-1.18],[2.6,py+0.36,-1.3],[0.3,py+0.3,1.45],[0.29,pcbTop+0.1,1.2]],0.026,W.blk);
+  /* PZEM TTL → placa */
+  tube([[-2.1,pcbTop+0.12,0.48],[-1.4,pcbTop+0.32,0.5],[0.2,pcbTop+0.12,0.45]],0.02,W.yel);
+  tube([[-2.04,pcbTop+0.12,0.48],[-1.4,pcbTop+0.28,0.56],[0.2,pcbTop+0.12,0.3]],0.02,W.grn);
+  tube([[-1.98,pcbTop+0.12,0.48],[-1.4,pcbTop+0.24,0.62],[0.2,pcbTop+0.12,0.6]],0.02,W.red);
+  /* señal ESP → relés (por detrás, en mazo) */
+  var sigCols=[W.blu,W.yel,W.org,W.grn];
+  relXs.forEach(function(rx,ri){
+    var sx=0.95+ri*0.09;
+    var c=tube([[sx,pcbTop+0.15,-1.08],[sx-0.2,pcbTop+0.35,-1.4],[0.2,pcbTop+0.38,-1.66],[rx+0.3,pcbTop+0.34,-1.66],[rx+0.09*((ri%3)-1),pcbTop+0.2,-1.54]],0.016,sigCols[ri]);
+    if(ri===0){tie(c,0.42,0.055,M.tieBlk);}
+  });
+  /* relés → tomas frontales */
   relXs.forEach(function(rx,ri){
     var ox=smartXs[ri];
-    tube([[rx,padY+0.40,-0.44],[rx,padY+0.50,0.18],[ox,padY+0.50,1.52],[ox,padY+0.32,1.68]],0.038,M.wBlk);
-    tube([[rx,padY+0.36,-0.44],[rx+0.06,padY+0.46,0.18],[ox+0.06,padY+0.46,1.52],[ox+0.06,padY+0.28,1.68]],0.038,M.wBlu);
+    var a=tube([[rx-0.14,pcbTop+0.12,-0.56],[rx-0.1,py+0.55,-0.2],[ox-0.05,py+0.6,1.2],[ox-0.05,fyc,frontZ-0.12]],0.034,W.brn);
+    var b=tube([[rx,pcbTop+0.12,-0.56],[rx+0.02,py+0.5,-0.2],[ox+0.05,py+0.55,1.2],[ox+0.05,fyc,frontZ-0.12]],0.034,W.blu);
+    tie(a,0.55,0.085);
   });
-  tube([[fixedX,padY+0.38,1.64],[fixedX,padY+0.50,0.60],[3.0,padY+0.50,-0.50],[3.35,padY+0.44,-0.94]],0.038,M.wRed);
+  tube([[fixedX,fyc,frontZ-0.12],[fixedX,py+0.55,0.9],[3.0,py+0.6,-0.6],[3.6,py+0.56,-1.15]],0.034,W.brn);
+  tube([[fixedX+0.1,fyc,frontZ-0.12],[fixedX+0.1,py+0.5,0.9],[3.1,py+0.54,-0.6],[3.85,py+0.56,-1.15]],0.034,W.blu);
+  /* cable de red interno W5500 → RJ45 trasero */
+  tube([[2.02,pcbTop+0.3,-0.9],[2.6,py+0.45,-1.5],[BW/2-1.0,iecY,backZ+0.12]],0.035,phys({color:0x2b6bd8,roughness:.5}));
+  /* sensor de corriente: cable fino */
+  tube([[-2.0,pcbTop+0.12,1.25],[-2.2,pcbTop+0.15,1.0],[-2.55,pcbTop+0.12,1.0]],0.014,W.wht);
 
-  var gnd=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.ShadowMaterial({opacity:0.28}));
-  gnd.rotation.x=-Math.PI/2;gnd.receiveShadow=true;scene.add(gnd);
+  /* suelo con sombra */
+  var gnd=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.ShadowMaterial({opacity:0.32}));
+  gnd.rotation.x=-Math.PI/2;gnd.position.y=-0.045;gnd.receiveShadow=true;scene.add(gnd);
+
+  /* ── Puntos de información ── */
+  var HS=[
+    {t:'ESP32',d:'El cerebro del equipo: lee los sensores, maneja los relés y publica todo por MQTT. También sirve la interfaz web local en el puerto 80.',p:[0.72,0.56,-0.48]},
+    {t:'Módulo Ethernet W5500',d:'Conexión cableada por SPI. En un rack es más estable que WiFi y no depende de la señal.',p:[2.0,0.62,-0.62]},
+    {t:'Sensor AHT10',d:'Mide la temperatura y la humedad dentro del rack por I2C (dirección 0x38).',p:[2.58,0.48,0.72]},
+    {t:'Medidor PZEM-004T v3',d:'Mide voltaje, corriente, potencia, factor de potencia, frecuencia y energía acumulada. Se comunica por UART a 9600 baudios.',p:[-2.5,0.5,0.78]},
+    {t:'4 relés',d:'Uno por toma, conectados a los GPIO 26, 27, 32 y 33. Son los que encienden y apagan cada equipo.',p:[-2.0,0.75,-1.05]},
+    {t:'Fuente de 5 V',d:'Alimenta toda la electrónica. Entrega 5 V con un mínimo de 2 A.',p:[3.35,0.85,0.2]},
+    {t:'Protección térmica',d:'Llave termomagnética en riel DIN a la entrada de la línea: corta la alimentación ante un cortocircuito o sobrecarga.',p:[-3.85,1.0,-1.4]}
+  ];
+  var hsWrap=document.getElementById('hotspots'), hsCard=document.getElementById('hsCard');
+  var hsTitle=document.getElementById('hsTitle'), hsText=document.getElementById('hsText'), vHint=document.getElementById('vHint');
+  var hsEls=HS.map(function(h,i){
+    var b=document.createElement('button');b.className='hotspot';b.textContent=i+1;b.setAttribute('aria-label',h.t);
+    b.addEventListener('click',function(e){e.stopPropagation();openHS(i);});
+    hsWrap.appendChild(b);h.v=new THREE.Vector3(h.p[0],h.p[1],h.p[2]);return b;
+  });
+  function openHS(i){hsEls.forEach(function(b,j){b.classList.toggle('sel',i===j);});hsTitle.textContent=HS[i].t;hsText.textContent=HS[i].d;hsCard.style.display='block';vHint.style.display='none';}
+  function closeHS(){hsEls.forEach(function(b){b.classList.remove('sel');});hsCard.style.display='none';vHint.style.display='';}
+  document.getElementById('hsClose').addEventListener('click',closeHS);
 
   var btnI=document.getElementById('vs-interior');
   var btnS=document.getElementById('vs-spin');
   var btnR=document.getElementById('vs-reset');
-  var lidOpen=0,lidTarget=0,LID_ANGLE=-2.2;
-
-  function setInterior(open){lidTarget=open?1:0;btnI.setAttribute('aria-pressed',open?'true':'false');btnI.textContent=open?'Cerrar':'Interior';}
+  var lidOpen=0,lidTarget=0,LID_ANGLE=-2.0;
+  function setInterior(open){
+    lidTarget=open?1:0;btnI.setAttribute('aria-pressed',open?'true':'false');btnI.textContent=open?'Cerrar':'Ver interior';
+    vHint.textContent=open?'Tocá los puntos naranjas para ver cada componente':'Arrastrá para girar · Scroll para zoom';
+    if(!open) closeHS();
+    if(open){controls.autoRotate=false;btnS.setAttribute('aria-pressed','false');}
+  }
   btnI.addEventListener('click',function(){setInterior(lidTarget<0.5);});
   btnS.addEventListener('click',function(){controls.autoRotate=!controls.autoRotate;btnS.setAttribute('aria-pressed',controls.autoRotate?'true':'false');});
   var hP=camera.position.clone(),hT=controls.target.clone();
@@ -706,23 +1321,169 @@
   function resize(){var w=wrap.clientWidth,h=wrap.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
   window.addEventListener('resize',resize);resize();
 
-  function animate(){requestAnimationFrame(animate);lidOpen+=(lidTarget-lidOpen)*0.10;lidPivot.rotation.x=LID_ANGLE*lidOpen;controls.update();renderer.render(scene,camera);}
+  var tmp=new THREE.Vector3(), visible=true, t0=performance.now();
+  if('IntersectionObserver' in window){new IntersectionObserver(function(en){visible=en[0].isIntersecting;},{rootMargin:'100px'}).observe(wrap);}
+  function animate(){
+    requestAnimationFrame(animate);
+    if(!visible) return;
+    var tt=(performance.now()-t0)/1000;
+    M.ledB.emissiveIntensity=Math.sin(tt*6)>0.2?2:0.3;  /* LED NET parpadea con el tráfico */
+    lidOpen+=(lidTarget-lidOpen)*0.09;lidPivot.rotation.x=LID_ANGLE*lidOpen;controls.update();renderer.render(scene,camera);
+    var show=lidOpen>0.85, w=wrap.clientWidth, h=wrap.clientHeight;
+    for(var i=0;i<HS.length;i++){
+      var el=hsEls[i];
+      if(!show){el.style.display='none';continue;}
+      tmp.copy(HS[i].v).project(camera);
+      if(tmp.z>1){el.style.display='none';continue;}
+      el.style.display='flex';el.style.left=((tmp.x+1)/2*w)+'px';el.style.top=((1-tmp.y)/2*h)+'px';
+    }
+  }
   animate();
+
+  window.SR3D={setOutlet:function(i,on){
+    if(outletLeds[i]) outletLeds[i].material=on?M.ledOn:M.ledOff;
+    if(relayLeds[i]) relayLeds[i].material=on?M.ledOn:M.ledOff;
+  }};
 })();
 </script>
 
 <script>
-  /* Formulario */
-  const form=document.getElementById('contactForm');
-  form.addEventListener('submit',async(e)=>{
-    e.preventDefault();const btn=form.querySelector('.form-submit');btn.textContent='Enviando...';btn.disabled=true;
-    try{const res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});
-      if(res.ok){form.reset();document.getElementById('formSuccess').style.display='block';btn.style.display='none';}
-      else{btn.textContent='Error al enviar. Intentá de nuevo.';btn.disabled=false;}
-    }catch{btn.textContent='Error al enviar. Intentá de nuevo.';btn.disabled=false;}
+/* ═════════════════════════════════════════════
+   Arquitectura, roles, UI
+   ═════════════════════════════════════════════ */
+(function(){
+  'use strict';
+  var $=function(s,c){return (c||document).querySelector(s);}, $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
+
+  /* ── Arquitectura ── */
+  var IC={
+    chip:'<path d="M9 3v2M15 3v2M9 19v2M15 19v2M3 9h2M3 15h2M19 9h2M19 15h2"/><rect x="5" y="5" width="14" height="14" rx="2"/><rect x="9" y="9" width="6" height="6"/>',
+    net:'<rect x="2" y="14" width="20" height="7" rx="2"/><path d="M6 14V8a6 6 0 0 1 12 0v6"/><path d="M10 17.5h4"/>',
+    cloud:'<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
+    code:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',
+    db:'<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>',
+    web:'<rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>'
+  };
+  var NODES=[
+    {ic:'chip',t:'Mide el rack',s:'hardware',d:'El PZEM-004T mide la energía y el AHT10 la temperatura y humedad. Un ESP32 junta todo, maneja los 4 relés y arma cada mensaje con la hora exacta.',tags:['PZEM-004T','AHT10','ESP32','4 relés']},
+    {ic:'net',t:'Conexión cifrada',s:'cable + TLS',d:'El equipo se conecta por cable de red, no por WiFi, y cada mensaje sale cifrado con TLS. Nadie en la red puede leerlo ni modificarlo en el camino.',tags:['Ethernet','MQTT 3.1.1','TLS']},
+    {ic:'cloud',t:'Mensajería en la nube',s:'tiempo real',d:'Un servicio en la nube recibe los mensajes del equipo y los reparte al instante. Si el equipo se desconecta, avisa enseguida que está offline.',tags:['Publish/Subscribe','Tiempo real']},
+    {ic:'code',t:'Procesa los datos',s:'servidor',d:'Un proceso en el servidor valida cada lectura, la guarda y revisa los umbrales para mandar una alerta por mail si hace falta.',tags:['PHP 8.2','PHPMailer']},
+    {ic:'db',t:'Guarda el historial',s:'base de datos',d:'Toda la telemetría, los usuarios, las PDUs, las licencias y las alertas quedan guardados para poder consultarlos cuando quieras.',tags:['MySQL','17 tablas']},
+    {ic:'web',t:'Tu pantalla',s:'portal web',d:'Un panel con gráficos en vivo que se actualiza solo, sin recargar la página. Desde acá salen los comandos ON/OFF hacia las tomas.',tags:['Portal web','HTTPS','3 roles']}
+  ];
+  var arch=$('#arch'), card=$('#archCard');
+  NODES.forEach(function(n,i){
+    if(i){var l=document.createElement('div');l.className='link';l.setAttribute('aria-hidden','true');l.style.setProperty('--d',i);arch.appendChild(l);}
+    var b=document.createElement('button');b.className='node';b.setAttribute('role','tab');b.dataset.i=i;
+    b.innerHTML='<div class="node-ic"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+IC[n.ic]+'</svg></div><div><h4>'+n.t+'</h4><span>'+n.s+'</span></div>';
+    b.addEventListener('click',function(){selNode(i);});arch.appendChild(b);
   });
-  /* Nav scroll */
-  window.addEventListener('scroll',()=>{document.querySelector('nav').style.boxShadow=window.scrollY>20?'0 4px 20px rgba(0,0,0,0.3)':'none';});
+  function selNode(i){
+    $$('.node',arch).forEach(function(b,j){b.setAttribute('aria-selected',i===j);});
+    var n=NODES[i];
+    card.innerHTML='<div class="section-eyebrow" style="margin-bottom:6px">Paso '+(i+1)+' de '+NODES.length+'</div><h3>'+n.t+'</h3><p>'+n.d+'</p><div class="arch-tags">'+n.tags.map(function(t){return '<span class="tag">'+t+'</span>';}).join('')+'</div>';
+  }
+  selNode(0);
+
+  /* ── Roles ── */
+  var PERMS=[
+    ['Ver estado de las tomas',[1,1,1]],
+    ['Ver telemetría y gráficos',[1,1,1],'Premium'],
+    ['Encender y apagar tomas',[1,1,0]],
+    ['Recibir y resolver alertas',[1,1,0],'Premium'],
+    ['Exportar datos a CSV',[1,1,0],'Premium'],
+    ['Gestionar usuarios',[1,0,0]],
+    ['Gestionar PDUs y licencias',[1,0,0]]
+  ];
+  var ROLES={
+    admin:{i:0,t:'Administrador',d:'Acceso total al sistema: además de operar, da de alta usuarios, registra PDUs y administra las licencias. Para cambios sensibles le vuelve a pedir la contraseña.'},
+    oper:{i:1,t:'Operador',d:'El técnico del día a día: controla las tomas, sigue la telemetría, atiende las alertas y exporta datos. No puede tocar usuarios ni licencias.'},
+    view:{i:2,t:'Visualizador',d:'Solo lectura. Ideal para gerencia o para el cliente: ve el estado del rack sin poder cambiar nada.'}
+  };
+  var perms=$('#perms');
+  PERMS.forEach(function(p){var r=document.createElement('div');r.className='perm';r.innerHTML='<span>'+p[0]+(p[2]?'<small>'+p[2]+'</small>':'')+'</span><span class="perm-st"></span>';perms.appendChild(r);});
+  function selRole(k){
+    var R=ROLES[k];
+    $$('.tab').forEach(function(t){t.setAttribute('aria-selected',t.dataset.role===k);});
+    $('#roleDesc').innerHTML='<h3>'+R.t+'</h3><p>'+R.d+'</p>';
+    $$('.perm',perms).forEach(function(r,j){var y=PERMS[j][1][R.i];r.className='perm '+(y?'yes':'no');r.lastChild.textContent=y?'✓':'✕';});
+  }
+  $$('.tab').forEach(function(t){t.addEventListener('click',function(){selRole(t.dataset.role);});});
+  selRole('admin');
+
+  /* ── Menú móvil ── */
+  var nav=$('nav'), links=$('#navLinks'), menu=$('#navMenu');
+  menu.addEventListener('click',function(){var o=links.classList.toggle('open');menu.setAttribute('aria-expanded',o);menu.textContent=o?'✕':'☰';});
+  $$('a',links).forEach(function(a){a.addEventListener('click',function(){links.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.textContent='☰';});});
+  window.addEventListener('scroll',function(){nav.style.boxShadow=window.scrollY>20?'0 4px 20px rgba(0,0,0,0.3)':'none';},{passive:true});
+
+  /* ── Aparición, contadores y barra de avance ── */
+  function countUp(el){
+    var to=+el.dataset.count, t0=null;
+    function f(ts){if(!t0) t0=ts;var p=Math.min(1,(ts-t0)/1200);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1) requestAnimationFrame(f);}
+    requestAnimationFrame(f);
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(en){en.forEach(function(e){
+      if(!e.isIntersecting) return;
+      var el=e.target;el.classList.add('in');
+      $$('[data-count]',el).forEach(countUp);if(el.dataset.count) countUp(el);
+      io.unobserve(el);
+    });},{threshold:0.15});
+    $$('.reveal, .hero-stats').forEach(function(el){io.observe(el);});
+  }else{
+    $$('.reveal').forEach(function(el){el.classList.add('in');});
+  }
+
+  /* ── Formulario ── */
+  var form=$('#contactForm');
+  form.addEventListener('submit',function(e){
+    e.preventDefault();var b=form.querySelector('.form-submit');b.textContent='Enviando...';b.disabled=true;
+    fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}})
+      .then(function(res){if(res.ok){form.reset();$('#formSuccess').style.display='block';b.style.display='none';}else{throw 0;}})
+      .catch(function(){b.textContent='Error al enviar. Intentá de nuevo.';b.disabled=false;});
+  });
+
+  /* ── Equipo: tarjetas sin LinkedIn cargado (href="#") se muestran sin link ── */
+  $$('a.member').forEach(function(a){
+    var h=(a.getAttribute('href')||'').trim();
+    if(!h||h==='#'){var d=document.createElement('div');d.className='member';d.innerHTML=a.innerHTML;a.replaceWith(d);}
+    else{a.setAttribute('aria-label',a.querySelector('.member-name').textContent+' en LinkedIn');}
+  });
+
+  /* ── Foto del producto: inclinación con el mouse + arrastre manual ── */
+  (function(){
+    var zone=$('#heroPhoto'), card=$('#heroPhotoInner'), hint=$('#heroPhotoHint');
+    if(!zone||!card) return;
+    var MAX=14, rx=0, ry=0, dragging=false, moved=false, sx=0, sy=0;
+    function apply(){ card.style.transform='rotateX('+rx+'deg) rotateY('+ry+'deg)'; }
+    function fromPointer(clientX,clientY){
+      var r=zone.getBoundingClientRect();
+      var px=(clientX-r.left)/r.width, py=(clientY-r.top)/r.height;
+      ry=(px-0.5)*MAX*2; rx=(0.5-py)*MAX*2;
+    }
+    zone.addEventListener('mousemove',function(e){ if(dragging) return; fromPointer(e.clientX,e.clientY); apply(); });
+    zone.addEventListener('mouseleave',function(){ rx=0; ry=0; apply(); });
+    card.addEventListener('pointerdown',function(e){
+      dragging=true; moved=false; sx=e.clientX; sy=e.clientY; card.classList.add('dragging');
+      if(hint) hint.style.opacity='0';
+      try{ card.setPointerCapture(e.pointerId); }catch(err){}
+    });
+    card.addEventListener('pointermove',function(e){
+      if(!dragging) return;
+      var dx=e.clientX-sx, dy=e.clientY-sy;
+      if(Math.abs(dx)>3||Math.abs(dy)>3) moved=true;
+      ry=Math.max(-28,Math.min(28,dx*0.25)); rx=Math.max(-28,Math.min(28,-dy*0.25)); apply();
+    });
+    function endDrag(){
+      if(!dragging) return; dragging=false; card.classList.remove('dragging');
+      rx=0; ry=0; apply(); if(hint) hint.style.opacity='';
+    }
+    card.addEventListener('pointerup',endDrag);
+    card.addEventListener('pointercancel',endDrag);
+  })();
+})();
 </script>
 </body>
 </html>
